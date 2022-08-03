@@ -1,4 +1,4 @@
-- hosts: vm
+- hosts: all
   remote_user: root
   roles:
-  - nginx
+  - httpd

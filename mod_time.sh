@@ -44,7 +44,16 @@ _run() {
             time=$(awk '/knockDoorInAdvanceMs/{print $NF}' $i | tr -d ,)
             echo $i $pbu $time
         done
-
+    elif [ "$1" == "file" ]; then
+        echo "#!/usr/bin/env bash" >run.sh
+        file_path=$(find /home/tdgw/AUTOF* -name ${file_name})
+        for i in $file_path; do
+            pbu=$(grep 'pbu"' $i | tr -d '":,' | awk '{print $NF}')
+            time=$(awk '/knockDoorInAdvanceMs/{print $NF}' $i | tr -d ,)
+            echo bash $0 $pbu $time >>run.sh
+        done
+        echo bash $0 list >>run.sh
+        chmod a+x run.sh
     else
 
         echo -e "
@@ -53,6 +62,7 @@ Usage: bash command [options] [args]
 
 Samples:
     bash $0 list # 查看
+    bash $0 file # 生成 run.sh
     bash $0 12345 88 # PBU [NUM(1-100)]
 ==============================================================================
 \n"
