@@ -15,4 +15,10 @@ basepath=$(
     pwd
 )
 
-cd $basepath/cmd
+cd $basepath/
+cd ../playbooks
+for i in $(ls -1 | grep -v roles ); do
+    echo $0 $i
+done
+
+# ansible-playbook 01.prepare.yml

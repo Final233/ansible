@@ -1,0 +1,14 @@
+- name: 禁用GSSAPIAuthentication
+  replace: 
+    path: /etc/ssh/sshd_config
+    regexp: '^(GSSAPIAuthentication).*'
+    replace: '\1 no'
+
+- name: 禁用sshd服务名称解析
+  replace: 
+    path: /etc/ssh/sshd_config
+    regexp: '^(UseDNS).*'
+    replace: '\1 no'
+
+- name: sshd 服务重启
+  shell: sshd -t && systemctl restart sshd

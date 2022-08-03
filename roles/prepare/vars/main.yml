@@ -1,0 +1,4 @@
+# cmdline: ipv6.disable=1 selinux=0 transparent_hugepage=never default_hugepagesz=2M hugepagesz=2M
+cmdline: ipv6.disable=1 selinux=0 transparent_hugepage=never default_hugepagesz=2M hugepagesz=2M net.ifnames=0
+grub_file: /boot/efi/EFI/centos/grub.cfg
+# grub_file: /boot/grub.cfg

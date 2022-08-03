@@ -1,0 +1,9 @@
+- name: 修改启动参数
+  replace: 
+    path: /etc/default/grub
+    regexp: '^(GRUB_CMDLINE_LINUX=.* rhgb quiet).*'
+    replace: '\1 {{ cmdline }}"'
+    backup: yes
+
+- name: 生成grub文件
+  shell: grub2-mkconfig -o {{ grub_file }}

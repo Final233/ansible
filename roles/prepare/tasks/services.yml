@@ -1,0 +1,13 @@
+- name: 关闭无用服务
+  service: name={{ item }} state=stopped enabled=false
+  ignore_errors: yes
+  with_items: 
+    - postfix.service
+    - NetworkManager.service
+    - firewalld.service
+    - iptables.service
+    - cups.service
+    - ModemManager.service
+    - cpupower.service
+    - dnsmasq.service
+    - pcscd.service 

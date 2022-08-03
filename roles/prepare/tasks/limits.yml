@@ -1,0 +1,2 @@
+- name: 设置资源限制
+  copy: src=limits.conf dest=/etc/security/limits.conf

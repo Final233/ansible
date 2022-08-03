@@ -1,0 +1,6 @@
+- name: 修改内核参数
+  copy: src=sysctl.conf dest=/etc/sysctl.conf backup=yes
+
+- name: 内核参数生效
+  shell: sysctl -p
+  ignore_errors: yes

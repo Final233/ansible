@@ -1,0 +1,3 @@
+- name: 系统设置
+  script: set.sh
+  # ignore_errors: yes

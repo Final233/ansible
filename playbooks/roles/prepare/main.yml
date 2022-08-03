@@ -1,9 +1,0 @@
-# 关闭无用服务
-- name: services off
-  services:
-    name=rpcbind
-    state=stopped
-    enabled=false
-# 修改内核参数
-# 修改启动参数
-# 定义系统环境变量
