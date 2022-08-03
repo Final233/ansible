@@ -1,0 +1,4 @@
+- hosts: vm
+  remote_user: root
+  roles:
+  - nginx
