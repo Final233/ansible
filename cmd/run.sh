@@ -74,7 +74,7 @@ _cmd() {
     setup)
         _setup "$@"
         # echo $PLAY_BOOK
-        cmd="ansible-playbook -i ../hosts -e @../config.yml ../playbooks/$PLAY_BOOK -C $DEBUG"
+        cmd="ansible-playbook -i ../hosts -e @../config.yml ../playbooks/$PLAY_BOOK $DEBUG"
         $cmd
         ;;
     limit)

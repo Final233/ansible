@@ -19,6 +19,7 @@ if [ -f hosts ]; then
       echo "bash $basepath/mod_time.sh $var" >>$bash_filename
     done
   done
+  echo "bash $basepath/mod_time.sh list" >>$bash_filename
 else
   echo "hosts 文件不存在"
 fi

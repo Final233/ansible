@@ -20,7 +20,7 @@ cd $basepath
 DATE=$(date +%Y%m%d)
 DATE1=$(date +%Y%m%d-%H%M%S)
 NIC='eth0'
-ip=$(ip address show $NIC | awk -F/ '/inet/{print $1}' | awk '{print $2}')
+ip=$(/usr/sbin/ip address show $NIC | awk -F/ '/inet/{print $1}' | awk '{print $2}')
 _run() {
     file_name='MTP-Pbu.json'
     if [ $# -ge 2 ]; then
