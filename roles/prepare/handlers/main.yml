@@ -1,0 +1,12 @@
+- name: restart sshd
+  shell: sshd -t && systemctl restart sshd
+
+- name: source env
+  shell: source /etc/profile
+
+- name: 生成grub引导文件
+  shell: grub2-mkconfig -o {{ grub_file }}
+
+- name: 内核参数生效
+  shell: sysctl -p
+  ignore_errors: yes

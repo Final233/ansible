@@ -1,5 +1,5 @@
 # 引用两个角色
-- hosts: vm
+- hosts: web
   remote_user: root
   # 为角色添加标签
   # 如何执行某个标签 ansible-playbook nginx+httpd_role.yml -t nginx
@@ -9,5 +9,5 @@
     - {
         role: nginx,
         tags: ["web", "nginx"],
-        when: ansible_distribution_major_version == "7",
+        when: ansible_distribution_major_version == "7"
       }

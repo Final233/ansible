@@ -1,5 +1,5 @@
-- hosts: all
+- hosts: memcached
   remote_user: root
 
   roles:
-    - memcached
+    - { role:memcached, when: ansible_distribution_major_version == "7" }

@@ -1,2 +1,0 @@
-- name: create group
-  group: name=nginx gid=2000

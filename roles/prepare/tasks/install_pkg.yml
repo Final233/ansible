@@ -1,0 +1,38 @@
+- name: 安装常用软件包
+  yum: name={{ item }}
+  when: ansible_distribution_major_version == "7"
+  ignore_errors: yes
+  with_items:
+    - vim
+    - lrzsz
+    - tree
+    - screen
+    - psmisc
+    - lsof
+    - tcpdump
+    - wget
+    - ntpdate
+    - gcc
+    - gcc-c++
+    - glibc
+    - glibc-devel
+    - pcre
+    - pcre-devel
+    - openssl
+    - openssl-devel
+    - systemd-devel
+    - net-tools
+    - iotop
+    - bc
+    - zip
+    - unzip
+    - zlib-devel
+    - bash-completion
+    - nfs-utils
+    - automake
+    - libxml2libxml2-devel
+    - libxslt
+    - libxslt-devel
+    - perl
+    - perl-ExtUtils-Embed
+    - git

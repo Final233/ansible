@@ -1,0 +1,31 @@
+- name: mkdir /apps/nginx
+  file: name=/apps/pkg state=directory
+
+# - name: download package
+#   shell: wget -c http://nginx.org/download/nginx-1.22.0.tar.gz -O /apps/pkg/
+
+- name: unarchive package
+  unarchive: src=http://nginx.org/download/nginx-{{ nginx_version }}.tar.gz dest=/apps/pkg/ copy=no owner=nginx
+
+- name: make nginx
+  shell: 'cd /apps/pkg/nginx-{{ nginx_version }} && \
+  ./configure --prefix=/apps/nginx-{{ nginx_version }} \
+  --with-http_ssl_module \
+  --with-http_v2_module \
+  --with-http_realip_module \
+  --with-http_stub_status_module \
+  --with-http_gzip_static_module \
+  --with-pcre \
+  --with-stream \
+  --with-stream_ssl_module \
+  --with-stream_realip_module && \
+  make -j $(nproc) && make install'
+
+- name: link nginx
+  file: src=/apps/nginx-{{ nginx_version }} dest={{ app_dir }} state=link owner=nginx
+
+- name: create nginx conf directory
+  file: path={{ app_dir }}/conf/conf.d state=directory owner=nginx
+
+- name: env 
+  shell: echo "PATH=\$PATH:{{ app_dir }}/sbin/" > /etc/profile.d/nginx.sh && chmod a+x /etc/profile.d/nginx.sh && source /etc/profile

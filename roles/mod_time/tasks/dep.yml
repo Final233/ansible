@@ -1,0 +1,12 @@
+- name: 远程主机创建目录
+  file: path=/home/tdgw/scripts state=directory owner=tdgw
+
+- name: 分发脚本文件至主机
+  copy: src=mod_time.sh dest=/home/tdgw/scripts/ owner=tdgw mode=0755
+
+- name: 下发脚本gen_run.sh
+  copy: src=gen_run.sh dest=/home/tdgw/scripts/ owner=tdgw mode=0755
+
+- name: 分发hosts文件
+  copy: src=hosts dest=/home/tdgw/scripts/ owner=tdgw mode=0755
+

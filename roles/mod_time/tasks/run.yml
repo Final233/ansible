@@ -1,0 +1,15 @@
+- name: 执行脚本生成文件
+  command: /home/tdgw/scripts/mod_time.sh file
+
+- name: 获取远程主机文件
+  fetch: src=/home/tdgw/scripts/info dest=/tmp/
+
+# - name: 下发run.sh至远程主机
+#   copy: src=/tmp/{{ ansible_eth0.ipv4.address }}/home/tdgw/scripts/run.sh dest=/home/tdgw/scripts/ mode=0755 owner=tdgw
+
+- name: 生成run.sh
+  command: /home/tdgw/scripts/gen_run.sh
+
+- name: 执行远程主机脚本
+  command: /home/tdgw/scripts/run.sh
+

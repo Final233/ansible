@@ -2,7 +2,9 @@
 - include: sysctl.yml
 - include: grub.yml
 - include: env.yml
-- include: set.yml
+- include: set_system.yml
 - include: sshd.yml
 - include: limits.yml
+- include: yum_conf.yml
+- include: install_pkg.yml
 # - include: security.yml

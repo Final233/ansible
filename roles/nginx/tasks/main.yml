@@ -1,6 +1,5 @@
-- include: group.yml
 - include: user.yml
-- include: yum.yml
+- include: install.yml
 - include: template.yml
 - include: start.yml
 # 如何跨角色执行某一个任务，若使用到copy模块，注意文件路径

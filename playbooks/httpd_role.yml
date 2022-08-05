@@ -1,4 +1,4 @@
 - hosts: all
   remote_user: root
   roles:
-  - httpd
+    - { role: httpd, when: ansible_distribution_major_version == "7" }

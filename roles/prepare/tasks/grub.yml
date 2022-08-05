@@ -4,6 +4,4 @@
     regexp: '^(GRUB_CMDLINE_LINUX=.* rhgb quiet).*'
     replace: '\1 {{ cmdline }}"'
     backup: yes
-
-- name: 生成grub文件
-  shell: grub2-mkconfig -o {{ grub_file }}
+  notify: 生成grub引导文件
