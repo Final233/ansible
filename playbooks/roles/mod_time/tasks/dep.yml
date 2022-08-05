@@ -8,5 +8,6 @@
   copy: src=gen_run.sh dest=/home/tdgw/scripts/ owner=tdgw mode=0755
 
 - name: 分发hosts文件
-  copy: src=hosts dest=/home/tdgw/scripts/ owner=tdgw mode=0755
+  copy: src=../../../../hosts dest=/home/tdgw/scripts/ owner=tdgw mode=0755
+  # copy: src=hosts dest=/home/tdgw/scripts/ owner=tdgw mode=0755
 

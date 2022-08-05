@@ -1,0 +1,2 @@
+- name: this is test
+  shell: echo {{ test_var }}
