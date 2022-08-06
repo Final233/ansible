@@ -1,9 +1,9 @@
 - name: 安装常用软件包
   yum: name={{ item }}
-  when: ansible_distribution_major_version == "7"
+  when: ansible_distribution == "CentOS" and ansible_distribution_major_version == "7"
   ignore_errors: yes
   with_items:
-    - vim
+    - vim # 编辑器
     - lrzsz
     - tree
     - screen
@@ -27,7 +27,7 @@
     - zip
     - unzip
     - zlib-devel
-    - bash-completion
+    - bash-completion # bash命令补全工具
     - nfs-utils
     - automake
     - libxml2libxml2-devel
@@ -36,3 +36,5 @@
     - perl
     - perl-ExtUtils-Embed
     - git
+    - socat
+    - rsync

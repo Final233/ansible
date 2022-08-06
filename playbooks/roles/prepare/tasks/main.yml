@@ -7,4 +7,5 @@
 - include: limits.yml
 - include: yum_conf.yml
 - include: install_pkg.yml
-# - include: security.yml
+- include: security.yml
+  when: 'ansible_distribution in ["CentOS","RedHat","Amazon","Aliyun"]' 

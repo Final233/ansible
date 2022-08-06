@@ -5,3 +5,4 @@
     replace: '\1 {{ cmdline }}"'
     backup: yes
   notify: 生成grub引导文件
+  when: ansible_distribution == "CentOS" and ansible_distribution_major_version == "7"

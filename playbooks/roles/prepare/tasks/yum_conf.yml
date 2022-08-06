@@ -2,4 +2,4 @@
   shell: 'rm -f /etc/yum.reos.d/* && \
   wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo && \
   wget -O /etc/yum.repos.d/epel.repo http://mirrors.aliyun.com/repo/epel-7.repo' 
-  when: ansible_distribution_major_version == "7"
+  when: ansible_distribution == "CentOS" and ansible_distribution_major_version == "7"

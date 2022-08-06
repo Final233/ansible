@@ -1,3 +1,9 @@
+- name: 关闭 selinux
+  lineinfile:
+    dest: /etc/selinux/config
+    regexp: "^SELINUX="
+    line: "SELINUX=disabled"
+
 - name: 系统设置
   script: set.sh
   # ignore_errors: yes

@@ -30,8 +30,8 @@ _run() {
             run_path=${file_path/cfg\/${file_name}/}
             pbu=$(grep 'pbu"' $file_path | tr -d '":,' | awk '{print $NF}')
             if [ "$1" -eq "$pbu" ]; then
-                [ -d $basepath/${DATE}_bak ] || mkdir -p $basepath/${DATE}_bak
-                cp -a $file_path $basepath/${DATE}_bak/${file_name}_bak_${DATE1}_${pbu}${file_path////_}
+                [ -d $basepath/backup/${DATE} ] || mkdir -p $basepath/backup/${DATE}
+                cp -a $file_path $basepath/backup/${DATE}/${file_name}_bak_${DATE1}_${pbu}${file_path////_}
                 # cd $run_path && bash shutdown.sh
                 sed -ri "/knockDoorInAdvanceMs/s@(.* ).*,@\1"${time:=100}",@" $file_path && echo "$pbu mod_time is succ"
                 # cd $run_path && bash startup.sh

@@ -8,5 +8,5 @@
   shell: grub2-mkconfig -o {{ grub_file }}
 
 - name: 内核参数生效
-  shell: sysctl -p
+  shell: sysctl -p /etc/sysctl.d/88-sysctl.conf
   ignore_errors: yes
