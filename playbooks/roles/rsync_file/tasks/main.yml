@@ -1,0 +1,3 @@
+- name: 同步文件
+  synchronize: src=/mnt/d/box/ansible dest=/tmp compress=yes delete=yes checksum=yes
+  # synchronize: src=/tmp/data dest=/tmp/ compress=yes delete=yes checksum=yes --exclude=.git

@@ -26,6 +26,7 @@ available steps:
     04  httpd_nginx        to setup httpd and nginx
     05  memcached          to setup memcached
     06  mod_time           to setup mod_time
+    07  rysnc_file         to setup rsync_file
     99  all                to run 01~99 all at once
 
 examples: $0 setup 01 (or $0 setup prepare)
@@ -33,6 +34,7 @@ examples: $0 setup 01 (or $0 setup prepare)
          $0 limit 06 192.168.10.88 (对hosts中单个IP进行执行)
          $0 setup all
          $0 setup 01 -vvv (or -v or -vv 显示详细信息)
+         $0 setup 01 -C (测试运行)
 EOF
 }
 
@@ -59,6 +61,9 @@ _setup() {
     06 | mod_time)
         PLAY_BOOK="06.mod_time.yml"
         ;;
+    07 | rsync_file)
+        PLAY_BOOK="07.rsync_file.yml"
+        ;;
     99 | all)
         PLAY_BOOK="99.setup.yml"
         ;;
@@ -79,7 +84,7 @@ _cmd() {
         ;;
     limit)
         _setup "$@"
-        cmd="ansible-playbook -i ../hosts -e @../config.yml ../playbooks/$PLAY_BOOK --limit $3 -C $DEBUG"
+        cmd="ansible-playbook -i ../hosts -e @../config.yml ../playbooks/$PLAY_BOOK --limit $3 $DEBUG"
         $cmd
         ;;
     ping)
@@ -102,8 +107,16 @@ if [ $DEBUG == "-vvv" ]; then
     DEBUG="-vvv"
 elif [ $DEBUG == "-vv" ]; then
     DEBUG="-vv"
-elif [ $DEBUG == "-vv" ]; then
+elif [ $DEBUG == "-v" ]; then
     DEBUG="-v"
+elif [ $DEBUG == "-C" ]; then
+    DEBUG="-C"
+elif [ $DEBUG == "-Cv" ]; then
+    DEBUG="-C -v"
+elif [ $DEBUG == "-Cvv" ]; then
+    DEBUG="-C -vv"
+elif [ $DEBUG == "-Cvvv" ]; then
+    DEBUG="-C -vvv"
 else
     DEBUG=""
 fi
