@@ -92,7 +92,7 @@ _cmd() {
         $cmd
         ;;
     test)
-        cmd="ansible-playbook -i ../hosts -e @../config.yml ../playbooks/${PLAY_BOOK:=98.test.yml} -vv $DEBUG"
+        cmd="ansible-playbook -i ../hosts -e @../config.yml ../playbooks/${PLAY_BOOK:=98.test.yml} $DEBUG"
         $cmd
         ;;
 

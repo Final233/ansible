@@ -1,2 +1,0 @@
-- name: create user
-  user: name={{ username }} group={{ groupname }} system=yes shell=/sbin/nologin uid=4000

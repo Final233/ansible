@@ -1,2 +1,0 @@
-- name: create group
-  group: name={{ groupname }} system=yes gid=4000

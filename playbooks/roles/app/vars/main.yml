@@ -1,3 +1,7 @@
-username: app
-groupname: app
+user_name: app
+user_id: 4000
+group_name: app
+group_id: 4000
 http_port: 8080
+service_name: httpd
+package_name: httpd
