@@ -47,7 +47,7 @@ _run() {
             echo $i $pbu $time
         done
     elif [ "$1" == "file" ]; then
-        > info
+        # > info
         # echo $ip >> info
         echo "#!/usr/bin/env bash" > run.sh
         file_path=$(find /home/tdgw/AUTOF* -type f -name ${file_name})
@@ -55,9 +55,9 @@ _run() {
             pbu=$(grep 'pbu"' $i | tr -d '":,' | awk '{print $NF}')
             time=$(awk '/knockDoorInAdvanceMs/{print $NF}' $i | tr -d ,)
             echo bash $0 $pbu $time >> run.sh
-            echo "$pbu=$time" >> info
+            # echo "$pbu=$time" >> info
         done
-        echo bash $0 list >>run.sh
+        # echo bash $0 list >>run.sh
         chmod a+x run.sh
     else
 

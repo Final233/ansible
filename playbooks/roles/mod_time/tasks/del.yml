@@ -1,0 +1,2 @@
+- name: 删除备份目录
+  file: path=/home/tdgw/scripts/backup state=absent
