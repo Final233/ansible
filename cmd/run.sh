@@ -128,6 +128,7 @@ _cmd() {
         # echo $cmd
         ;;
     limit)
+        _setup "$@"
         log_path="logs/${PLAY_BOOK/.yml/}-$date.log"
         host=$3
         if [ $# -ge 5 ]; then
@@ -139,7 +140,7 @@ _cmd() {
         fi
         _setup "$@"
         cmd="ansible-playbook -i inventory/hosts -e @config.yml  $src_file $dest_file playbooks/$PLAY_BOOK $tags --limit $host $DEBUG"
-        $cmd | tee -a $log_path
+        unbuffer $cmd | tee -a $log_path
         # $cmd >> ../logs/"$PLAY_BOOK"_"$date".log
         ;;
     ping)
@@ -150,7 +151,6 @@ _cmd() {
         cmd="ansible-playbook -i inventory/hosts -e @config.yml playbooks/${PLAY_BOOK:=98.test.yml} $DEBUG"
         $cmd
         ;;
-
     *)
         _usage
         ;;
