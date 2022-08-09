@@ -30,14 +30,14 @@ EOF
 _usage() {
     echo -e "\033[33mUsage:\033[0m $0 < ip > < username > < password > \n"
     cat <<EOF
-examples: $0 root password 127.0.0.1
+examples: $0 127.0.0.1 root password 
 EOF
 }
 
 _pkg_check(){
-    if which expect &> /dev/null;then
-        pkg_check="expect"
-    elif which sshpass &> /dev/null;then
+    if which sshpass &> /dev/null;then
+        pkg_check="sshpass"
+    elif which expect &> /dev/null;then
         pkg_check="sshpass"
     else
         echo "pelase insttall expect or sshpass" && exit 2

@@ -1,3 +1,4 @@
 # ansible_ssh_user: root
-# ping_user: tdgw
-test_var: this_is_test
+test_var: "this is test"
+src_file: /mnt/d/box/ansible
+dest_file: /tmp/

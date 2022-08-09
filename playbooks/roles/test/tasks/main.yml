@@ -1,22 +1,10 @@
 - name: this is test
   shell: echo {{ test_var }}
 
-- block:
-    - name: test1
-      shell: ls 
-    - name: test2
-      shell: ls xx
-      register: test2_re
-      until: not test_re.failed
-      # retries: 3
-      # delay: 1
-    - name: test3
-      shell: ls
-  rescue:
-    - name: test4
-      shell: ls x
-    - name: tset5
-      shell: ls x
-  always:
-    - name: end
-      shell: ls x
+- name: do a thing
+  uri:
+      url: https://baidu.com
+  register: derpops
+- name: show deppops
+  debug:
+      msg: "derpops value is {{ derpops }}"
