@@ -1,0 +1,286 @@
+[1;35m[WARNING]: Ansible is being run in a world writable directory (/mnt/d/box/ansible), ignoring it as an ansible.cfg[0m
+[1;35msource. For more information see https://docs.ansible.com/ansible/devel/reference_appendices/config.html#cfg-in-world-[0m
+[1;35mwritable-dir[0m
+[1;35m[0m
+PLAY [all] *************************************************************************************************************
+
+TASK [Gathering Facts] *************************************************************************************************
+Wednesday 10 August 2022  14:23:38 +0800 (0:00:00.037)       0:00:00.037 ****** 
+[0;32mok: [192.168.10.89][0m
+[0;32m[0m[0;32mok: [192.168.10.88][0m
+[0;32m[0m
+TASK [prepare : 关闭无用服务] ************************************************************************************************
+Wednesday 10 August 2022  14:23:39 +0800 (0:00:00.874)       0:00:00.912 ****** 
+[0;32mok: [192.168.10.88] => (item=postfix.service)[0m
+[0;32m[0m[0;33mchanged: [192.168.10.89] => (item=postfix.service)[0m
+[0;33m[0m[0;32mok: [192.168.10.88] => (item=NetworkManager.service)[0m
+[0;32m[0m[0;32mok: [192.168.10.89] => (item=NetworkManager.service)[0m
+[0;32m[0m[0;32mok: [192.168.10.88] => (item=firewalld.service)[0m
+[0;32m[0m[0;32mok: [192.168.10.89] => (item=firewalld.service)[0m
+[0;32m[0m[0;31mfailed: [192.168.10.88] (item=iptables.service) => {"ansible_loop_var": "item", "changed": false, "item": "iptables.service", "msg": "Could not find the requested service iptables.service: host"}[0m
+[0;31m[0m[0;31mfailed: [192.168.10.89] (item=iptables.service) => {"ansible_loop_var": "item", "changed": false, "item": "iptables.service", "msg": "Could not find the requested service iptables.service: host"}[0m
+[0;31m[0m[0;31mfailed: [192.168.10.88] (item=cups.service) => {"ansible_loop_var": "item", "changed": false, "item": "cups.service", "msg": "Could not find the requested service cups.service: host"}[0m
+[0;31m[0m[0;31mfailed: [192.168.10.89] (item=cups.service) => {"ansible_loop_var": "item", "changed": false, "item": "cups.service", "msg": "Could not find the requested service cups.service: host"}[0m
+[0;31m[0m[0;31mfailed: [192.168.10.88] (item=ModemManager.service) => {"ansible_loop_var": "item", "changed": false, "item": "ModemManager.service", "msg": "Could not find the requested service ModemManager.service: host"}[0m
+[0;31m[0m[0;31mfailed: [192.168.10.89] (item=ModemManager.service) => {"ansible_loop_var": "item", "changed": false, "item": "ModemManager.service", "msg": "Could not find the requested service ModemManager.service: host"}[0m
+[0;31m[0m[0;32mok: [192.168.10.89] => (item=cpupower.service)[0m
+[0;32m[0m[0;32mok: [192.168.10.88] => (item=cpupower.service)[0m
+[0;32m[0m[0;31mfailed: [192.168.10.89] (item=dnsmasq.service) => {"ansible_loop_var": "item", "changed": false, "item": "dnsmasq.service", "msg": "Could not find the requested service dnsmasq.service: host"}[0m
+[0;31m[0m[0;31mfailed: [192.168.10.88] (item=dnsmasq.service) => {"ansible_loop_var": "item", "changed": false, "item": "dnsmasq.service", "msg": "Could not find the requested service dnsmasq.service: host"}[0m
+[0;31m[0m[0;31mfailed: [192.168.10.89] (item=pcscd.service) => {"ansible_loop_var": "item", "changed": false, "item": "pcscd.service", "msg": "Could not find the requested service pcscd.service: host"}[0m
+[0;31m[0m[0;36m...ignoring[0m
+[0;36m[0m[0;31mfailed: [192.168.10.88] (item=pcscd.service) => {"ansible_loop_var": "item", "changed": false, "item": "pcscd.service", "msg": "Could not find the requested service pcscd.service: host"}[0m
+[0;31m[0m[0;36m...ignoring[0m
+[0;36m[0m
+TASK [prepare : 修改内核参数] ************************************************************************************************
+Wednesday 10 August 2022  14:23:41 +0800 (0:00:01.842)       0:00:02.754 ****** 
+[0;32mok: [192.168.10.88][0m
+[0;32m[0m[0;33mchanged: [192.168.10.89][0m
+[0;33m[0m
+TASK [prepare : 修改启动参数] ************************************************************************************************
+Wednesday 10 August 2022  14:23:41 +0800 (0:00:00.479)       0:00:03.233 ****** 
+[0;32mok: [192.168.10.88][0m
+[0;32m[0m[0;33mchanged: [192.168.10.89][0m
+[0;33m[0m
+TASK [prepare : 定义Ubuntu系统环境变量] ****************************************************************************************
+Wednesday 10 August 2022  14:23:42 +0800 (0:00:00.221)       0:00:03.455 ****** 
+[0;32mok: [192.168.10.88][0m
+[0;32m[0m[0;33mchanged: [192.168.10.89][0m
+[0;33m[0m
+TASK [prepare : 定义Ubuntu系统环境变量] ****************************************************************************************
+Wednesday 10 August 2022  14:23:42 +0800 (0:00:00.449)       0:00:03.904 ****** 
+[0;36mskipping: [192.168.10.88][0m
+[0;36m[0m[0;36mskipping: [192.168.10.89][0m
+[0;36m[0m
+TASK [prepare : vim设置] *************************************************************************************************
+Wednesday 10 August 2022  14:23:42 +0800 (0:00:00.078)       0:00:03.982 ****** 
+[0;33mchanged: [192.168.10.88][0m
+[0;33m[0m[0;33mchanged: [192.168.10.89][0m
+[0;33m[0m
+TASK [prepare : 关闭 selinux] ********************************************************************************************
+Wednesday 10 August 2022  14:23:42 +0800 (0:00:00.394)       0:00:04.376 ****** 
+[0;32mok: [192.168.10.88][0m
+[0;32m[0m[0;32mok: [192.168.10.89][0m
+[0;32m[0m
+TASK [prepare : 系统设置] **************************************************************************************************
+Wednesday 10 August 2022  14:23:43 +0800 (0:00:00.230)       0:00:04.607 ****** 
+[0;33mchanged: [192.168.10.88][0m
+[0;33m[0m[0;33mchanged: [192.168.10.89][0m
+[0;33m[0m
+TASK [prepare : 禁用GSSAPIAuthentication] ********************************************************************************
+Wednesday 10 August 2022  14:23:43 +0800 (0:00:00.359)       0:00:04.967 ****** 
+[0;32mok: [192.168.10.88][0m
+[0;32m[0m[0;32mok: [192.168.10.89][0m
+[0;32m[0m
+TASK [prepare : 禁用sshd服务名称解析] ******************************************************************************************
+Wednesday 10 August 2022  14:23:43 +0800 (0:00:00.140)       0:00:05.107 ****** 
+[0;32mok: [192.168.10.88][0m
+[0;32m[0m[0;32mok: [192.168.10.89][0m
+[0;32m[0m
+TASK [prepare : 设置资源限制] ************************************************************************************************
+Wednesday 10 August 2022  14:23:43 +0800 (0:00:00.142)       0:00:05.250 ****** 
+[0;32mok: [192.168.10.88][0m
+[0;32m[0m[0;33mchanged: [192.168.10.89][0m
+[0;33m[0m
+TASK [prepare : 配置阿里云yum仓库] ********************************************************************************************
+Wednesday 10 August 2022  14:23:44 +0800 (0:00:00.403)       0:00:05.653 ****** 
+[1;35m[WARNING]: Consider using the file module with state=absent rather than running 'rm'.  If you need to use command[0m
+[1;35mbecause file is insufficient you can add 'warn: false' to this command task or set 'command_warnings=False' in[0m
+[1;35mansible.cfg to get rid of this message.[0m
+[1;35m[0m[0;33mchanged: [192.168.10.89][0m
+[0;33m[0m[0;33mchanged: [192.168.10.88][0m
+[0;33m[0m
+TASK [prepare : 安装常用软件包] ***********************************************************************************************
+Wednesday 10 August 2022  14:23:44 +0800 (0:00:00.541)       0:00:06.194 ****** 
+[0;35m[DEPRECATION WARNING]: Invoking "yum" only once while using a loop via squash_actions is deprecated. Instead of using a[0m
+[0;35m loop to supply multiple items and specifying `name: "{{ item }}"`, please use `name: ['vim', 'lrzsz', 'tree', [0m
+[0;35m'screen', 'psmisc', 'lsof', 'tcpdump', 'wget', 'ntpdate', 'gcc', 'gcc-c++', 'glibc', 'glibc-devel', 'pcre', 'pcre-[0m
+[0;35mdevel', 'openssl', 'openssl-devel', 'systemd-devel', 'net-tools', 'iotop', 'bc', 'zip', 'unzip', 'zlib-devel', 'bash-[0m
+[0;35mcompletion', 'nfs-utils', 'automake', 'libxml2libxml2-devel', 'libxslt', 'libxslt-devel', 'perl', 'perl-ExtUtils-[0m
+[0;35mEmbed', 'git', 'socat', 'rsync']` and remove the loop. This feature will be removed in version 2.11. Deprecation [0m
+[0;35mwarnings can be disabled by setting deprecation_warnings=False in ansible.cfg.[0m
+[0;35m[0m[0;35m[DEPRECATION WARNING]: Invoking "yum" only once while using a loop via squash_actions is deprecated. Instead of using a[0m
+[0;35m loop to supply multiple items and specifying `name: "{{ item }}"`, please use `name: ['vim', 'lrzsz', 'tree', [0m
+[0;35m'screen', 'psmisc', 'lsof', 'tcpdump', 'wget', 'ntpdate', 'gcc', 'gcc-c++', 'glibc', 'glibc-devel', 'pcre', 'pcre-[0m
+[0;35mdevel', 'openssl', 'openssl-devel', 'systemd-devel', 'net-tools', 'iotop', 'bc', 'zip', 'unzip', 'zlib-devel', 'bash-[0m
+[0;35mcompletion', 'nfs-utils', 'automake', 'libxml2libxml2-devel', 'libxslt', 'libxslt-devel', 'perl', 'perl-ExtUtils-[0m
+[0;35mEmbed', 'git', 'socat', 'rsync']` and remove the loop. This feature will be removed in version 2.11. Deprecation [0m
+[0;35mwarnings can be disabled by setting deprecation_warnings=False in ansible.cfg.[0m
+[0;35m[0m[0;31mfailed: [192.168.10.88] (item=['vim', 'lrzsz', 'tree', 'screen', 'psmisc', 'lsof', 'tcpdump', 'wget', 'ntpdate', 'gcc', 'gcc-c++', 'glibc', 'glibc-devel', 'pcre', 'pcre-devel', 'openssl', 'openssl-devel', 'systemd-devel', 'net-tools', 'iotop', 'bc', 'zip', 'unzip', 'zlib-devel', 'bash-completion', 'nfs-utils', 'automake', 'libxml2libxml2-devel', 'libxslt', 'libxslt-devel', 'perl', 'perl-ExtUtils-Embed', 'git', 'socat', 'rsync']) => {"ansible_loop_var": "item", "changed": false, "item": ["vim", "lrzsz", "tree", "screen", "psmisc", "lsof", "tcpdump", "wget", "ntpdate", "gcc", "gcc-c++", "glibc", "glibc-devel", "pcre", "pcre-devel", "openssl", "openssl-devel", "systemd-devel", "net-tools", "iotop", "bc", "zip", "unzip", "zlib-devel", "bash-completion", "nfs-utils", "automake", "libxml2libxml2-devel", "libxslt", "libxslt-devel", "perl", "perl-ExtUtils-Embed", "git", "socat", "rsync"], "msg": "No package matching 'libxml2libxml2-devel' found available, installed or updated", "rc": 126, "results": ["2:vim-enhanced-7.4.629-8.el7_9.x86_64 providing vim is already installed", "lrzsz-0.12.20-36.el7.x86_64 providing lrzsz is already installed", "tree-1.6.0-10.el7.x86_64 providing tree is already installed", "screen-4.1.0-0.27.20120314git3c2946.el7_9.x86_64 providing screen is already installed", "psmisc-22.20-17.el7.x86_64 providing psmisc is already installed", "lsof-4.87-6.el7.x86_64 providing lsof is already installed", "14:tcpdump-4.9.2-4.el7_7.1.x86_64 providing tcpdump is already installed", "wget-1.14-18.el7_6.1.x86_64 providing wget is already installed", "gcc-4.8.5-44.el7.x86_64 providing gcc is already installed", "gcc-c++-4.8.5-44.el7.x86_64 providing gcc-c++ is already installed", "glibc-2.17-324.el7_9.x86_64 providing glibc is already installed", "glibc-devel-2.17-324.el7_9.x86_64 providing glibc-devel is already installed", "pcre-8.32-17.el7.x86_64 providing pcre is already installed", "pcre-devel-8.32-17.el7.x86_64 providing pcre-devel is already installed", "1:openssl-1.0.2k-21.el7_9.x86_64 providing openssl is already installed", "1:openssl-devel-1.0.2k-21.el7_9.x86_64 providing openssl-devel is already installed", "iotop-0.6-4.el7.noarch providing iotop is already installed", "bc-1.06.95-13.el7.x86_64 providing bc is already installed", "zip-3.0-11.el7.x86_64 providing zip is already installed", "unzip-6.0-22.el7_9.x86_64 providing unzip is already installed", "zlib-devel-1.2.7-19.el7_9.x86_64 providing zlib-devel is already installed", "1:bash-completion-2.1-8.el7.noarch providing bash-completion is already installed", "1:nfs-utils-1.3.0-0.68.el7.x86_64 providing nfs-utils is already installed", "automake-1.13.4-3.el7.noarch providing automake is already installed", "No package matching 'libxml2libxml2-devel' found available, installed or updated"]}[0m
+[0;31m[0m[0;36m...ignoring[0m
+[0;36m[0m[0;31mfailed: [192.168.10.89] (item=['vim', 'lrzsz', 'tree', 'screen', 'psmisc', 'lsof', 'tcpdump', 'wget', 'ntpdate', 'gcc', 'gcc-c++', 'glibc', 'glibc-devel', 'pcre', 'pcre-devel', 'openssl', 'openssl-devel', 'systemd-devel', 'net-tools', 'iotop', 'bc', 'zip', 'unzip', 'zlib-devel', 'bash-completion', 'nfs-utils', 'automake', 'libxml2libxml2-devel', 'libxslt', 'libxslt-devel', 'perl', 'perl-ExtUtils-Embed', 'git', 'socat', 'rsync']) => {"ansible_loop_var": "item", "changed": false, "item": ["vim", "lrzsz", "tree", "screen", "psmisc", "lsof", "tcpdump", "wget", "ntpdate", "gcc", "gcc-c++", "glibc", "glibc-devel", "pcre", "pcre-devel", "openssl", "openssl-devel", "systemd-devel", "net-tools", "iotop", "bc", "zip", "unzip", "zlib-devel", "bash-completion", "nfs-utils", "automake", "libxml2libxml2-devel", "libxslt", "libxslt-devel", "perl", "perl-ExtUtils-Embed", "git", "socat", "rsync"], "msg": "No package matching 'libxml2libxml2-devel' found available, installed or updated", "rc": 126, "results": ["2:vim-enhanced-7.4.629-8.el7_9.x86_64 providing vim is already installed", "lrzsz-0.12.20-36.el7.x86_64 providing lrzsz is already installed", "tree-1.6.0-10.el7.x86_64 providing tree is already installed", "screen-4.1.0-0.27.20120314git3c2946.el7_9.x86_64 providing screen is already installed", "psmisc-22.20-17.el7.x86_64 providing psmisc is already installed", "lsof-4.87-6.el7.x86_64 providing lsof is already installed", "14:tcpdump-4.9.2-4.el7_7.1.x86_64 providing tcpdump is already installed", "wget-1.14-18.el7_6.1.x86_64 providing wget is already installed", "gcc-4.8.5-44.el7.x86_64 providing gcc is already installed", "gcc-c++-4.8.5-44.el7.x86_64 providing gcc-c++ is already installed", "glibc-2.17-324.el7_9.x86_64 providing glibc is already installed", "glibc-devel-2.17-324.el7_9.x86_64 providing glibc-devel is already installed", "pcre-8.32-17.el7.x86_64 providing pcre is already installed", "pcre-devel-8.32-17.el7.x86_64 providing pcre-devel is already installed", "1:openssl-1.0.2k-21.el7_9.x86_64 providing openssl is already installed", "1:openssl-devel-1.0.2k-21.el7_9.x86_64 providing openssl-devel is already installed", "iotop-0.6-4.el7.noarch providing iotop is already installed", "bc-1.06.95-13.el7.x86_64 providing bc is already installed", "zip-3.0-11.el7.x86_64 providing zip is already installed", "unzip-6.0-22.el7_9.x86_64 providing unzip is already installed", "zlib-devel-1.2.7-19.el7_9.x86_64 providing zlib-devel is already installed", "1:bash-completion-2.1-8.el7.noarch providing bash-completion is already installed", "1:nfs-utils-1.3.0-0.68.el7.x86_64 providing nfs-utils is already installed", "automake-1.13.4-3.el7.noarch providing automake is already installed", "No package matching 'libxml2libxml2-devel' found available, installed or updated"]}[0m
+[0;31m[0m[0;36m...ignoring[0m
+[0;36m[0m
+TASK [prepare : 安全加固] **************************************************************************************************
+Wednesday 10 August 2022  14:24:18 +0800 (0:00:33.881)       0:00:40.076 ****** 
+[0;33mchanged: [192.168.10.88][0m
+[0;33m[0m[0;33mchanged: [192.168.10.89][0m
+[0;33m[0m
+RUNNING HANDLER [prepare : source env] *********************************************************************************
+Wednesday 10 August 2022  14:24:19 +0800 (0:00:00.365)       0:00:40.441 ****** 
+[0;33mchanged: [192.168.10.89][0m
+[0;33m[0m
+RUNNING HANDLER [prepare : 生成grub引导文件] *********************************************************************************
+Wednesday 10 August 2022  14:24:19 +0800 (0:00:00.131)       0:00:40.573 ****** 
+[0;33mchanged: [192.168.10.89][0m
+[0;33m[0m
+RUNNING HANDLER [prepare : 内核参数生效] *************************************************************************************
+Wednesday 10 August 2022  14:24:21 +0800 (0:00:02.100)       0:00:42.673 ****** 
+[0;31mfatal: [192.168.10.89]: FAILED! => {"changed": true, "cmd": "sysctl -p /etc/sysctl.d/88-sysctl.conf", "delta": "0:00:00.013306", "end": "2022-08-10 14:24:20.924559", "msg": "non-zero return code", "rc": 255, "start": "2022-08-10 14:24:20.911253", "stderr": "sysctl: cannot stat /proc/sys/net/bridge/bridge-nf-call-ip6tables: No such file or directory\nsysctl: cannot stat /proc/sys/net/bridge/bridge-nf-call-iptables: No such file or directory\nsysctl: cannot stat /proc/sys/net/bridge/bridge-nf-call-arptables: No such file or directory\nsysctl: cannot stat /proc/sys/net/netfilter/nf_conntrack_max: No such file or directory", "stderr_lines": ["sysctl: cannot stat /proc/sys/net/bridge/bridge-nf-call-ip6tables: No such file or directory", "sysctl: cannot stat /proc/sys/net/bridge/bridge-nf-call-iptables: No such file or directory", "sysctl: cannot stat /proc/sys/net/bridge/bridge-nf-call-arptables: No such file or directory", "sysctl: cannot stat /proc/sys/net/netfilter/nf_conntrack_max: No such file or directory"], "stdout": "kernel.core_uses_pid = 1\nkernel.core_pattern = core.%e.%p.%u\nkernel.msgmax = 65536\nkernel.msgmnb = 65536\nkernel.shmall = 4294967296\nkernel.shmmax = 68719476736\nkernel.sysrq = 0\nkernel.panic_on_oops = 1\nkernel.panic = 10\nnet.ipv4.conf.default.accept_source_route = 0\nnet.ipv4.tcp_mem = 1048576 1572864 2097152\nnet.ipv4.tcp_rmem = 4096 8192 4194304\nnet.ipv4.tcp_wmem = 4096 8192 4194304\nnet.ipv4.udp_mem = 4096 8192 4194304\nnet.ipv4.udp_rmem_min = 8192\nnet.ipv4.tcp_sack = 1\nnet.ipv4.tcp_window_scaling = 1\nnet.core.netdev_max_backlog = 262144\nnet.core.optmem_max = 81920\nnet.core.rmem_default = 8388608\nnet.core.rmem_max = 16777216\nnet.core.somaxconn = 32768\nnet.core.wmem_default = 8388608\nnet.core.wmem_max = 16777216\nnet.ipv4.tcp_max_syn_backlog = 262144\nnet.ipv4.tcp_retries1 = 3\nnet.ipv4.tcp_retries2 = 15\nnet.ipv4.tcp_syn_retries = 3\nnet.ipv4.tcp_tw_recycle = 1\nnet.ipv4.tcp_tw_reuse = 1\nnet.ipv4.tcp_fin_timeout = 1\nnet.ipv4.tcp_max_tw_buckets = 20000\nnet.ipv4.tcp_timestamps = 0\nnet.ipv4.tcp_synack_retries = 1\nnet.ipv4.tcp_syncookies = 1\nnet.ipv4.tcp_keepalive_intvl = 30\nnet.ipv4.tcp_keepalive_probes = 3\nnet.ipv4.tcp_keepalive_time = 300\nnet.ipv4.ip_local_port_range = 10001 65000\nvm.nr_hugepages_mempolicy = 0\nvm.overcommit_memory = 0\nvm.swappiness = 10\nfs.file-max = 1000000\nkernel.pid_max = 131072\nnet.ipv4.tcp_max_orphans = 3276800\nnet.ipv4.tcp_mtu_probing = 1\nnet.ipv4.tcp_slow_start_after_idle = 0\nnet.ipv4.tcp_moderate_rcvbuf = 1\nnet.core.busy_poll = 50\nnet.core.busy_read = 50\nnet.core.default_qdisc = fq\nnet.ipv4.tcp_congestion_control = cubic\nkernel.nmi_watchdog = 0\nkernel.sched_autogroup_enabled = 0\nnet.ipv4.route.gc_timeout = 100\nnet.ipv4.tcp_low_latency = 1\nfs.inotify.max_user_instances = 8192", "stdout_lines": ["kernel.core_uses_pid = 1", "kernel.core_pattern = core.%e.%p.%u", "kernel.msgmax = 65536", "kernel.msgmnb = 65536", "kernel.shmall = 4294967296", "kernel.shmmax = 68719476736", "kernel.sysrq = 0", "kernel.panic_on_oops = 1", "kernel.panic = 10", "net.ipv4.conf.default.accept_source_route = 0", "net.ipv4.tcp_mem = 1048576 1572864 2097152", "net.ipv4.tcp_rmem = 4096 8192 4194304", "net.ipv4.tcp_wmem = 4096 8192 4194304", "net.ipv4.udp_mem = 4096 8192 4194304", "net.ipv4.udp_rmem_min = 8192", "net.ipv4.tcp_sack = 1", "net.ipv4.tcp_window_scaling = 1", "net.core.netdev_max_backlog = 262144", "net.core.optmem_max = 81920", "net.core.rmem_default = 8388608", "net.core.rmem_max = 16777216", "net.core.somaxconn = 32768", "net.core.wmem_default = 8388608", "net.core.wmem_max = 16777216", "net.ipv4.tcp_max_syn_backlog = 262144", "net.ipv4.tcp_retries1 = 3", "net.ipv4.tcp_retries2 = 15", "net.ipv4.tcp_syn_retries = 3", "net.ipv4.tcp_tw_recycle = 1", "net.ipv4.tcp_tw_reuse = 1", "net.ipv4.tcp_fin_timeout = 1", "net.ipv4.tcp_max_tw_buckets = 20000", "net.ipv4.tcp_timestamps = 0", "net.ipv4.tcp_synack_retries = 1", "net.ipv4.tcp_syncookies = 1", "net.ipv4.tcp_keepalive_intvl = 30", "net.ipv4.tcp_keepalive_probes = 3", "net.ipv4.tcp_keepalive_time = 300", "net.ipv4.ip_local_port_range = 10001 65000", "vm.nr_hugepages_mempolicy = 0", "vm.overcommit_memory = 0", "vm.swappiness = 10", "fs.file-max = 1000000", "kernel.pid_max = 131072", "net.ipv4.tcp_max_orphans = 3276800", "net.ipv4.tcp_mtu_probing = 1", "net.ipv4.tcp_slow_start_after_idle = 0", "net.ipv4.tcp_moderate_rcvbuf = 1", "net.core.busy_poll = 50", "net.core.busy_read = 50", "net.core.default_qdisc = fq", "net.ipv4.tcp_congestion_control = cubic", "kernel.nmi_watchdog = 0", "kernel.sched_autogroup_enabled = 0", "net.ipv4.route.gc_timeout = 100", "net.ipv4.tcp_low_latency = 1", "fs.inotify.max_user_instances = 8192"]}[0m
+[0;31m[0m[0;36m...ignoring[0m
+[0;36m[0m
+PLAY RECAP *************************************************************************************************************
+[0;33m192.168.10.88[0m              : [0;32mok=14  [0m [0;33mchanged=4   [0m unreachable=0    failed=0    [0;36mskipped=1   [0m rescued=0    [1;35mignored=2   [0m
+[0;33m192.168.10.89[0m              : [0;32mok=17  [0m [0;33mchanged=12  [0m unreachable=0    failed=0    [0;36mskipped=1   [0m rescued=0    [1;35mignored=3   [0m
+
+Wednesday 10 August 2022  14:24:21 +0800 (0:00:00.127)       0:00:42.801 ****** 
+=============================================================================== 
+prepare : 安装常用软件包 ---------------------------------------------------------------------------------------------- 33.88s
+prepare : 生成grub引导文件 -------------------------------------------------------------------------------------------- 2.10s
+prepare : 关闭无用服务 ------------------------------------------------------------------------------------------------ 1.84s
+Gathering Facts ------------------------------------------------------------------------------------------------- 0.87s
+prepare : 配置阿里云yum仓库 -------------------------------------------------------------------------------------------- 0.54s
+prepare : 修改内核参数 ------------------------------------------------------------------------------------------------ 0.48s
+prepare : 定义Ubuntu系统环境变量 ---------------------------------------------------------------------------------------- 0.45s
+prepare : 设置资源限制 ------------------------------------------------------------------------------------------------ 0.40s
+prepare : vim设置 ------------------------------------------------------------------------------------------------- 0.39s
+prepare : 安全加固 -------------------------------------------------------------------------------------------------- 0.37s
+prepare : 系统设置 -------------------------------------------------------------------------------------------------- 0.36s
+prepare : 关闭 selinux -------------------------------------------------------------------------------------------- 0.23s
+prepare : 修改启动参数 ------------------------------------------------------------------------------------------------ 0.22s
+prepare : 禁用sshd服务名称解析 ------------------------------------------------------------------------------------------ 0.14s
+prepare : 禁用GSSAPIAuthentication -------------------------------------------------------------------------------- 0.14s
+prepare : source env -------------------------------------------------------------------------------------------- 0.13s
+prepare : 内核参数生效 ------------------------------------------------------------------------------------------------ 0.13s
+prepare : 定义Ubuntu系统环境变量 ---------------------------------------------------------------------------------------- 0.08s
+[1;35m[WARNING]: Ansible is being run in a world writable directory (/mnt/d/box/ansible), ignoring it as an ansible.cfg source. For more information see[0m
+[1;35mhttps://docs.ansible.com/ansible/devel/reference_appendices/config.html#cfg-in-world-writable-dir[0m
+[1;35m[0m
+PLAY [all] *************************************************************************************************************************************************
+
+TASK [Gathering Facts] *************************************************************************************************************************************
+Wednesday 10 August 2022  14:25:32 +0800 (0:00:00.034)       0:00:00.034 ****** 
+[0;32mok: [192.168.10.89][0m
+[0;32m[0m[0;32mok: [192.168.10.88][0m
+[0;32m[0m
+TASK [prepare : 关闭无用服务] ************************************************************************************************************************************
+Wednesday 10 August 2022  14:25:33 +0800 (0:00:01.023)       0:00:01.058 ****** 
+[0;32mok: [192.168.10.89] => (item=postfix.service)[0m
+[0;32m[0m[0;32mok: [192.168.10.88] => (item=postfix.service)[0m
+[0;32m[0m[0;32mok: [192.168.10.89] => (item=NetworkManager.service)[0m
+[0;32m[0m[0;32mok: [192.168.10.88] => (item=NetworkManager.service)[0m
+[0;32m[0m[0;32mok: [192.168.10.89] => (item=firewalld.service)[0m
+[0;32m[0m[0;32mok: [192.168.10.88] => (item=firewalld.service)[0m
+[0;32m[0m[0;31mfailed: [192.168.10.89] (item=iptables.service) => {"ansible_loop_var": "item", "changed": false, "item": "iptables.service", "msg": "Could not find the requested service iptables.service: host"}[0m
+[0;31m[0m[0;31mfailed: [192.168.10.88] (item=iptables.service) => {"ansible_loop_var": "item", "changed": false, "item": "iptables.service", "msg": "Could not find the requested service iptables.service: host"}[0m
+[0;31m[0m[0;31mfailed: [192.168.10.89] (item=cups.service) => {"ansible_loop_var": "item", "changed": false, "item": "cups.service", "msg": "Could not find the requested service cups.service: host"}[0m
+[0;31m[0m[0;31mfailed: [192.168.10.88] (item=cups.service) => {"ansible_loop_var": "item", "changed": false, "item": "cups.service", "msg": "Could not find the requested service cups.service: host"}[0m
+[0;31m[0m[0;31mfailed: [192.168.10.89] (item=ModemManager.service) => {"ansible_loop_var": "item", "changed": false, "item": "ModemManager.service", "msg": "Could not find the requested service ModemManager.service: host"}[0m
+[0;31m[0m[0;31mfailed: [192.168.10.88] (item=ModemManager.service) => {"ansible_loop_var": "item", "changed": false, "item": "ModemManager.service", "msg": "Could not find the requested service ModemManager.service: host"}[0m
+[0;31m[0m[0;32mok: [192.168.10.89] => (item=cpupower.service)[0m
+[0;32m[0m[0;32mok: [192.168.10.88] => (item=cpupower.service)[0m
+[0;32m[0m[0;31mfailed: [192.168.10.89] (item=dnsmasq.service) => {"ansible_loop_var": "item", "changed": false, "item": "dnsmasq.service", "msg": "Could not find the requested service dnsmasq.service: host"}[0m
+[0;31m[0m[0;31mfailed: [192.168.10.88] (item=dnsmasq.service) => {"ansible_loop_var": "item", "changed": false, "item": "dnsmasq.service", "msg": "Could not find the requested service dnsmasq.service: host"}[0m
+[0;31m[0m[0;31mfailed: [192.168.10.89] (item=pcscd.service) => {"ansible_loop_var": "item", "changed": false, "item": "pcscd.service", "msg": "Could not find the requested service pcscd.service: host"}[0m
+[0;31m[0m[0;36m...ignoring[0m
+[0;36m[0m[0;31mfailed: [192.168.10.88] (item=pcscd.service) => {"ansible_loop_var": "item", "changed": false, "item": "pcscd.service", "msg": "Could not find the requested service pcscd.service: host"}[0m
+[0;31m[0m[0;36m...ignoring[0m
+[0;36m[0m
+TASK [prepare : 修改内核参数] ************************************************************************************************************************************
+Wednesday 10 August 2022  14:25:35 +0800 (0:00:01.907)       0:00:02.965 ****** 
+[0;32mok: [192.168.10.88][0m
+[0;32m[0m[0;32mok: [192.168.10.89][0m
+[0;32m[0m
+TASK [prepare : 修改启动参数] ************************************************************************************************************************************
+Wednesday 10 August 2022  14:25:36 +0800 (0:00:00.484)       0:00:03.450 ****** 
+[0;32mok: [192.168.10.88][0m
+[0;32m[0m[0;32mok: [192.168.10.89][0m
+[0;32m[0m
+TASK [prepare : 定义Ubuntu系统环境变量] ****************************************************************************************************************************
+Wednesday 10 August 2022  14:25:36 +0800 (0:00:00.208)       0:00:03.658 ****** 
+[0;32mok: [192.168.10.88][0m
+[0;32m[0m[0;32mok: [192.168.10.89][0m
+[0;32m[0m
+TASK [prepare : 定义Ubuntu系统环境变量] ****************************************************************************************************************************
+Wednesday 10 August 2022  14:25:36 +0800 (0:00:00.443)       0:00:04.101 ****** 
+[0;36mskipping: [192.168.10.88][0m
+[0;36m[0m[0;36mskipping: [192.168.10.89][0m
+[0;36m[0m
+TASK [prepare : vim设置] *************************************************************************************************************************************
+Wednesday 10 August 2022  14:25:36 +0800 (0:00:00.077)       0:00:04.178 ****** 
+[0;32mok: [192.168.10.88][0m
+[0;32m[0m[0;32mok: [192.168.10.89][0m
+[0;32m[0m
+TASK [prepare : 关闭 selinux] ********************************************************************************************************************************
+Wednesday 10 August 2022  14:25:37 +0800 (0:00:00.399)       0:00:04.578 ****** 
+[0;32mok: [192.168.10.88][0m
+[0;32m[0m[0;32mok: [192.168.10.89][0m
+[0;32m[0m
+TASK [prepare : 系统设置] **************************************************************************************************************************************
+Wednesday 10 August 2022  14:25:37 +0800 (0:00:00.227)       0:00:04.806 ****** 
+[0;33mchanged: [192.168.10.88][0m
+[0;33m[0m[0;33mchanged: [192.168.10.89][0m
+[0;33m[0m
+TASK [prepare : 禁用GSSAPIAuthentication] ********************************************************************************************************************
+Wednesday 10 August 2022  14:25:37 +0800 (0:00:00.341)       0:00:05.148 ****** 
+[0;32mok: [192.168.10.88][0m
+[0;32m[0m[0;32mok: [192.168.10.89][0m
+[0;32m[0m
+TASK [prepare : 禁用sshd服务名称解析] ******************************************************************************************************************************
+Wednesday 10 August 2022  14:25:37 +0800 (0:00:00.149)       0:00:05.297 ****** 
+[0;32mok: [192.168.10.88][0m
+[0;32m[0m[0;32mok: [192.168.10.89][0m
+[0;32m[0m
+TASK [prepare : 设置资源限制] ************************************************************************************************************************************
+Wednesday 10 August 2022  14:25:38 +0800 (0:00:00.152)       0:00:05.450 ****** 
+[0;32mok: [192.168.10.88][0m
+[0;32m[0m[0;32mok: [192.168.10.89][0m
+[0;32m[0m
+TASK [prepare : 配置阿里云yum仓库] ********************************************************************************************************************************
+Wednesday 10 August 2022  14:25:38 +0800 (0:00:00.403)       0:00:05.854 ****** 
+[1;35m[WARNING]: Consider using the file module with state=absent rather than running 'rm'.  If you need to use command because file is insufficient you can add[0m
+[1;35m'warn: false' to this command task or set 'command_warnings=False' in ansible.cfg to get rid of this message.[0m
+[1;35m[0m[0;33mchanged: [192.168.10.88][0m
+[0;33m[0m[0;33mchanged: [192.168.10.89][0m
+[0;33m[0m
+TASK [prepare : 安装常用软件包] ***********************************************************************************************************************************
+Wednesday 10 August 2022  14:25:38 +0800 (0:00:00.441)       0:00:06.295 ****** 
+[0;35m[DEPRECATION WARNING]: Invoking "yum" only once while using a loop via squash_actions is deprecated. Instead of using a loop to supply multiple items and [0m
+[0;35mspecifying `name: "{{ item }}"`, please use `name: ['vim', 'lrzsz', 'tree', 'screen', 'psmisc', 'lsof', 'tcpdump', 'wget', 'ntpdate', 'gcc', 'gcc-c++', [0m
+[0;35m'glibc', 'glibc-devel', 'pcre', 'pcre-devel', 'openssl', 'openssl-devel', 'systemd-devel', 'net-tools', 'iotop', 'bc', 'zip', 'unzip', 'zlib-devel', 'bash-[0m
+[0;35mcompletion', 'nfs-utils', 'automake', 'libxml2', 'libxml2-devel', 'libxslt', 'libxslt-devel', 'perl', 'perl-ExtUtils-Embed', 'git', 'socat', 'rsync']` and [0m
+[0;35mremove the loop. This feature will be removed in version 2.11. Deprecation warnings can be disabled by setting deprecation_warnings=False in ansible.cfg.[0m
+[0;35m[0m[0;35m[DEPRECATION WARNING]: Invoking "yum" only once while using a loop via squash_actions is deprecated. Instead of using a loop to supply multiple items and [0m
+[0;35mspecifying `name: "{{ item }}"`, please use `name: ['vim', 'lrzsz', 'tree', 'screen', 'psmisc', 'lsof', 'tcpdump', 'wget', 'ntpdate', 'gcc', 'gcc-c++', [0m
+[0;35m'glibc', 'glibc-devel', 'pcre', 'pcre-devel', 'openssl', 'openssl-devel', 'systemd-devel', 'net-tools', 'iotop', 'bc', 'zip', 'unzip', 'zlib-devel', 'bash-[0m
+[0;35mcompletion', 'nfs-utils', 'automake', 'libxml2', 'libxml2-devel', 'libxslt', 'libxslt-devel', 'perl', 'perl-ExtUtils-Embed', 'git', 'socat', 'rsync']` and [0m
+[0;35mremove the loop. This feature will be removed in version 2.11. Deprecation warnings can be disabled by setting deprecation_warnings=False in ansible.cfg.[0m
+[0;35m[0m[0;33mchanged: [192.168.10.89] => (item=['vim', 'lrzsz', 'tree', 'screen', 'psmisc', 'lsof', 'tcpdump', 'wget', 'ntpdate', 'gcc', 'gcc-c++', 'glibc', 'glibc-devel', 'pcre', 'pcre-devel', 'openssl', 'openssl-devel', 'systemd-devel', 'net-tools', 'iotop', 'bc', 'zip', 'unzip', 'zlib-devel', 'bash-completion', 'nfs-utils', 'automake', 'libxml2', 'libxml2-devel', 'libxslt', 'libxslt-devel', 'perl', 'perl-ExtUtils-Embed', 'git', 'socat', 'rsync'])[0m
+[0;33m[0m[0;33mchanged: [192.168.10.88] => (item=['vim', 'lrzsz', 'tree', 'screen', 'psmisc', 'lsof', 'tcpdump', 'wget', 'ntpdate', 'gcc', 'gcc-c++', 'glibc', 'glibc-devel', 'pcre', 'pcre-devel', 'openssl', 'openssl-devel', 'systemd-devel', 'net-tools', 'iotop', 'bc', 'zip', 'unzip', 'zlib-devel', 'bash-completion', 'nfs-utils', 'automake', 'libxml2', 'libxml2-devel', 'libxslt', 'libxslt-devel', 'perl', 'perl-ExtUtils-Embed', 'git', 'socat', 'rsync'])[0m
+[0;33m[0m
+TASK [prepare : 安全加固] **************************************************************************************************************************************
+Wednesday 10 August 2022  14:25:56 +0800 (0:00:17.570)       0:00:23.866 ****** 
+[0;33mchanged: [192.168.10.88][0m
+[0;33m[0m[0;33mchanged: [192.168.10.89][0m
+[0;33m[0m
+PLAY RECAP *************************************************************************************************************************************************
+[0;33m192.168.10.88[0m              : [0;32mok=14  [0m [0;33mchanged=4   [0m unreachable=0    failed=0    [0;36mskipped=1   [0m rescued=0    [1;35mignored=1   [0m
+[0;33m192.168.10.89[0m              : [0;32mok=14  [0m [0;33mchanged=4   [0m unreachable=0    failed=0    [0;36mskipped=1   [0m rescued=0    [1;35mignored=1   [0m
+
+Wednesday 10 August 2022  14:25:56 +0800 (0:00:00.348)       0:00:24.215 ****** 
+=============================================================================== 
+prepare : 安装常用软件包 ---------------------------------------------------------------------------------------------------------------------------------- 17.57s
+prepare : 关闭无用服务 ------------------------------------------------------------------------------------------------------------------------------------ 1.91s
+Gathering Facts ------------------------------------------------------------------------------------------------------------------------------------- 1.02s
+prepare : 修改内核参数 ------------------------------------------------------------------------------------------------------------------------------------ 0.48s
+prepare : 定义Ubuntu系统环境变量 ---------------------------------------------------------------------------------------------------------------------------- 0.44s
+prepare : 配置阿里云yum仓库 -------------------------------------------------------------------------------------------------------------------------------- 0.44s
+prepare : 设置资源限制 ------------------------------------------------------------------------------------------------------------------------------------ 0.40s
+prepare : vim设置 ------------------------------------------------------------------------------------------------------------------------------------- 0.40s
+prepare : 安全加固 -------------------------------------------------------------------------------------------------------------------------------------- 0.35s
+prepare : 系统设置 -------------------------------------------------------------------------------------------------------------------------------------- 0.34s
+prepare : 关闭 selinux -------------------------------------------------------------------------------------------------------------------------------- 0.23s
+prepare : 修改启动参数 ------------------------------------------------------------------------------------------------------------------------------------ 0.21s
+prepare : 禁用sshd服务名称解析 ------------------------------------------------------------------------------------------------------------------------------ 0.15s
+prepare : 禁用GSSAPIAuthentication -------------------------------------------------------------------------------------------------------------------- 0.15s
+prepare : 定义Ubuntu系统环境变量 ---------------------------------------------------------------------------------------------------------------------------- 0.08s

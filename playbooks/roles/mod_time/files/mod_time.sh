@@ -35,7 +35,6 @@ _vars() {
     else
         NIC="eth0"
     fi
-    local_ip=$(/usr/sbin/ip address show $NIC | awk -F/ '/inet /{print $1}' | awk '{print $2}')
     file_name='MTP-Pbu.json'
 }
 
@@ -61,7 +60,11 @@ _file() {
 }
 
 _hosts() {
+    local_ip=$(/usr/sbin/ip address show $NIC | awk -F/ '/inet /{print $1}' | awk '{print $2}')
     file='hosts'
+    hosts_status=$(curl -Ls -I http://192.168.10.1/hosts | awk '/HTTP/{print $2}')
+    URL="http://192.168.10.1/$file"
+    wget $URL -O $file -t1 -T5 || rm -f $file
     if [ -f hosts ]; then
         ip_list=$(sed -rn '/PBU/s/^([0-9.]+)(.*)/\1/p' $file)
         bash_filename="run.sh"
@@ -83,6 +86,20 @@ _hosts() {
     fi
 }
 
+_start(){
+    echo -e '#!/usr/bin/env bash
+
+basepath=$(
+    cd $(dirname $0)
+    pwd
+)
+
+cd $basepath
+
+bash $basepath/mod_time.sh hosts bond0 && bash $basepath/run.sh
+bash $basepath/mod_time.sh list  
+    ' > start.sh
+}
 _mod() {
     if [ $# -ge 3 ]; then
         file_list=$(find /home/tdgw/AUTOF* -type f -name ${file_name})
@@ -111,7 +128,8 @@ Usage: bash command [options] [args]
 Samples:
     bash $0 list # 查看
     bash $0 file # 生成 run.sh
-    bash $0 hosts
+    bash $0 hosts eth0 # eth0
+    bash $0 start # start bash script template
     bash $0 mod 12345 88 # PBU [NUM(1-100)]
 ==============================================================================
 \n"
@@ -130,6 +148,9 @@ _cmd() {
         ;;
     hosts)
         _hosts "$@"
+        ;;
+    start)
+        _start
         ;;
     *)
         _usage

@@ -1,10 +1,16 @@
 - name: this is test
   shell: echo {{ test_var }}
 
-- name: do a thing
-  uri:
-      url: https://baidu.com
-  register: derpops
-- name: show deppops
-  debug:
-      msg: "derpops value is {{ derpops }}"
+- command: whoami
+  register: result
+- debug:
+    var: result.stdout
+
+- name: test
+  shell: echo {{ ansible_date_time.date }} {{ ansible_date_time.time }}
+  register: result
+- debug:
+    var: result.stdout
+
+- name: test1
+  shell: ls perl-ExtUtils-Embed

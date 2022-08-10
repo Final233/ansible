@@ -35,10 +35,10 @@ examples: $0 setup 01 (or $0 setup prepare)
          $0 limit 06 192.168.10.88 (对hosts中单个IP进行执行)
 
          $0 setup 07 (or $0 setup rysnc_file)
-         $0 setup 07 /mnt/d/box/ansible /tmp (default cp -rf /mnt/d/box/ansible /tmp/)
-         $0 setup 07 /tmp/file /data (cp -f /tmp/file /data/file) ---- rsync file
-         $0 setup 07 /tmp/dir/ /data (cp -rf /tmp/dir/* /data/dir/.) ---- rsync file
-         $0 setup 07 /tmp/dir /data (cp -rf /tmp/dir /data/dir) ---- rsync dir
+         $0 setup 07 /mnt/d/box/ansible /tmp/ (default cp -rf /mnt/d/box/ansible /tmp/)
+         $0 setup 07 /tmp/file /data/ (cp -f /tmp/file /data/file) ---- rsync file
+         $0 setup 07 /tmp/dir/ /data/ (cp -rf /tmp/dir/* /data/dir/.) ---- rsync file
+         $0 setup 07 /tmp/dir /data/ (cp -rf /tmp/dir /data/dir) ---- rsync dir
 
          $0 setup all
          $0 setup 01 -vvv (or -v or -vv 显示详细信息)
@@ -113,42 +113,41 @@ _cmd() {
     setup)
         _setup "$@"
         # echo $PLAY_BOOK
-        if [ $PLAY_BOOK == "07.rsync_file.yml" ]; then
-            src_file="-e src_file="$3""
-            dest_file="-e dest_file="$4""
+        if [ $# -ge 4 ]; then
+            if [ $PLAY_BOOK == "07.rsync_file.yml" ]; then
+                src_file="-e src_file=$3"
+                dest_file="-e dest_file=$4"
+            fi
         fi
         if [ "$3" == "--skip-tags" ]; then
             tags="--skip-tags $4"
         fi
         log_path="logs/${PLAY_BOOK/.yml/}-$date.log"
-        echo $log_path
-        cmd="ansible-playbook -i inventory/hosts -e @config.yml $src_file $dest_file $tags playbooks/$PLAY_BOOK $DEBUG"
-        unbuffer $cmd | tee -a $log_path
-        # $cmd >> ../logs/"$PLAY_BOOK"_"$date".log && tail ../logs/"$PLAY_BOOK"_"$date".log
-        # echo $cmd
+        export ANSIBLE_LOG_PATH="$basepath/$log_path"
+        cmd="ansible-playbook -i inventory/hosts -e @config.yml $src_file $dest_file $tags playbooks/$PLAY_BOOK $DEBUG -v"
+        $cmd
         ;;
     limit)
         _setup "$@"
         log_path="logs/${PLAY_BOOK/.yml/}-$date.log"
+        export ANSIBLE_LOG_PATH="$basepath/$log_path"
         host=$3
         if [ $# -ge 5 ]; then
-            src_file="-e src_file="$4""
-            dest_file="-e dest_file="$5""
+            src_file="-e src_file=$4"
+            dest_file="-e dest_file=$5"
         fi
         if [ "$4" == "--skip-tags" ]; then
             tags="--skip-tags $5"
         fi
-        _setup "$@"
-        cmd="ansible-playbook -i inventory/hosts -e @config.yml  $src_file $dest_file playbooks/$PLAY_BOOK $tags --limit $host $DEBUG"
-        unbuffer $cmd | tee -a $log_path
-        # $cmd >> ../logs/"$PLAY_BOOK"_"$date".log
+        cmd="ansible-playbook -i inventory/hosts -e @config.yml  $src_file $dest_file playbooks/$PLAY_BOOK $tags --limit $host $DEBUG -v"
+        $cmd
         ;;
     ping)
         cmd="ansible-playbook -i inventory/hosts -e @config.yml playbooks/${PLAY_BOOK:=00.ping.yml}"
         $cmd
         ;;
     test)
-        cmd="ansible-playbook -i inventory/hosts -e @config.yml playbooks/${PLAY_BOOK:=98.test.yml} $DEBUG"
+        cmd="ansible-playbook -i inventory/hosts -e @config.yml playbooks/${PLAY_BOOK:=98.test.yml} $DEBUG -v"
         $cmd
         ;;
     *)
