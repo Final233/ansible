@@ -1,7 +1,1 @@
-# - name: restart nginx
-#   service: name=nginx state=restarted
-
-# - name: reload nginx
-#   service: name=nginx state=reloaded
-
 - include: roles/public/handlers/main.yml

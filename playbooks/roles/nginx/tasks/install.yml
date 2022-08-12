@@ -1,6 +1,6 @@
 - name: mkdir /apps/nginx
   file: 
-    name: {{ pkg_path }}
+    name: "{{ pkg_path }}"
     state: directory
 
 - shell: "[ -f {{ pkg_path }}/nginx-{{ nginx_version }}.tar.gz ] || echo 'failed'"
@@ -9,13 +9,13 @@
 - name: copy nginx package
   copy:
     src: ../../../../files/nginx-{{ nginx_version }}.tar.gz
-    dest: {{ pkg_path }}
+    dest: "{{ pkg_path }}"
   when: "'failed' in nginx_pkg_check.stdout"
 
 - name: unarchive package
   unarchive: 
-    src: {{ pkg_path }}/nginx-{{ nginx_version }}.tar.gz
-    dest: {{ pkg_path }}
+    src: "{{ pkg_path }}/nginx-{{ nginx_version }}.tar.gz"
+    dest: "{{ pkg_path }}"
     copy: no 
     owner: nginx
 
@@ -29,13 +29,13 @@
   - name: link nginx
     file: 
       src: /apps/nginx-{{ nginx_version }} 
-      dest: {{ app_dir }} 
+      dest: "{{ app_dir }}" 
       state: link 
       owner: nginx
 
   - name: create nginx conf directory
     file: 
-      path: {{ app_dir }}/conf/conf.d 
+      path: "{{ app_dir }}/conf/conf.d "
       state: directory 
       owner: nginx
 

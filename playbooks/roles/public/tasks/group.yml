@@ -1,5 +1,5 @@
 - name: create group
   group:
-    name: {{ group_name }}
+    name: "{{ group_name }}"
     system: yes 
-    gid: {{ group_gid }}
+    gid: "{{ group_gid }}"

@@ -1,3 +1,6 @@
 - name: 修改内核参数
-  copy: src=sysctl.conf dest=/etc/sysctl.d/88-sysctl.conf backup=yes
+  copy: 
+    src: sysctl.conf 
+    dest: /etc/sysctl.d/88-sysctl.conf 
+    backup: yes
   notify: 内核参数生效

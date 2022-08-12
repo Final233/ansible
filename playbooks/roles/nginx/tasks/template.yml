@@ -1,10 +1,19 @@
 - name: copy nginx master conf
-  template: src=nginx.conf.j2 dest={{ app_dir }}/conf/nginx.conf owner=nginx
+  template: 
+    src: nginx.conf.j2 
+    dest: "{{ app_dir }}/conf/nginx.conf" 
+    owner: nginx
   notify: restart nginx
 
 - name: copy nginx status conf
-  copy: src=status.conf dest={{ app_dir }}/conf/conf.d/ owner=nginx
+  copy: 
+    src: status.conf 
+    dest: "{{ app_dir }}/conf/conf.d/"
+    owner: nginx
   notify: reload nginx
 
 - name: copy service file
-  template: src=nginx.service.j2 dest=/usr/lib/systemd/system/nginx.service owner=nginx
+  template: 
+    src: nginx.service.j2 
+    dest: /usr/lib/systemd/system/nginx.service 
+    owner: nginx

@@ -1,7 +1,7 @@
 - name: 同步文件
   synchronize: 
-    src: {{ src_file }} 
-    dest: {{ dest_file }} 
+    src: "{{ src_file }}" 
+    dest: "{{ dest_file }}" 
     compress: yes 
     delete: yes 
     checksum: yes 

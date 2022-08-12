@@ -162,7 +162,7 @@ _cmd() {
         log_path="logs/${PLAY_BOOK/.yml/}-$date.log"
         export ANSIBLE_LOG_PATH="$basepath/$log_path"
         _debug "$@"
-        cmd="ansible-playbook -i inventory/hosts -e @config.yml $src_file $dest_file $tags playbooks/$PLAY_BOOK $DEBUG -v"
+        cmd="ansible-playbook -i inventory/hosts -e @config.yml $src_file $dest_file $tags playbooks/$PLAY_BOOK $DEBUG"
         _logger info $cmd
         $cmd
         ;;
@@ -181,7 +181,7 @@ _cmd() {
         if [ "$4" == "--skip-tags" ]; then
             tags="--skip-tags $5"
         fi
-        cmd="ansible-playbook -i inventory/hosts -e @config.yml  $src_file $dest_file playbooks/$PLAY_BOOK $tags --limit $host $DEBUG -v"
+        cmd="ansible-playbook -i inventory/hosts -e @config.yml  $src_file $dest_file playbooks/$PLAY_BOOK $tags --limit $host $DEBUG"
         _logger info $cmd
         $cmd
         ;;
@@ -191,7 +191,7 @@ _cmd() {
         $cmd
         ;;
     test)
-        cmd="ansible-playbook -i inventory/hosts -e @config.yml playbooks/${PLAY_BOOK:=98.test.yml} $DEBUG -v"
+        cmd="ansible-playbook -i inventory/hosts -e @config.yml playbooks/${PLAY_BOOK:=98.test.yml} $DEBUG"
         _logger info $cmd
         $cmd
         ;;

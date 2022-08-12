@@ -1,6 +1,6 @@
 - name: 关闭无用服务
   service: 
-    name: {{ item }} 
+    name: "{{ item }}" 
     state: stopped 
     enabled: false
   ignore_errors: yes
