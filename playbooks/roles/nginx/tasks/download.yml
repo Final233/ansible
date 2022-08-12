@@ -1,0 +1,14 @@
+- shell: "[ -f {{ files }}/nginx-{{ nginx_version }}.tar.gz ] || echo 'failed'"
+  register: file_check
+  connection: local
+
+- name: download package
+  get_url: 
+    url: http://nginx.org/download/nginx-{{ nginx_version }}.tar.gz
+    dest: "{{ files }}"
+    validate_certs: no
+    mode: 0644
+    # owner: {{ user_name }} 
+    # group: {{ group_name }}
+  connection: local
+  when: "'failed' in file_check.stdout"

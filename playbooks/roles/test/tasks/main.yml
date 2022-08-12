@@ -1,16 +1,10 @@
-- name: this is test
-  shell: echo {{ test_var }}
+- shell: echo x
+  register: checkx
 
-- command: whoami
-  register: result
-- debug:
-    var: result.stdout
+- block:
+  - name: test1
+    shell: echo 1
 
-- name: test
-  shell: echo {{ ansible_date_time.date }} {{ ansible_date_time.time }}
-  register: result
-- debug:
-    var: result.stdout
-
-- name: test1
-  shell: ls perl-ExtUtils-Embed
+  - name: test2
+    shell: echo 2
+  when: "'xx' in checkx.stdout"

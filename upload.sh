@@ -7,7 +7,8 @@
 #********************************************************************
 
 DATE=$(date +%F-%T)
-rm -f bak-*.tar.gz
+# rm -f bak-*.tar.gz
+rm -f logs/*.log
 # git remote set-url origin https://xxxxxxx.com/cangku
 git rm -r --cached
 git add -A

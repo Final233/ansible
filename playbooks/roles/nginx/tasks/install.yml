@@ -1,31 +1,45 @@
 - name: mkdir /apps/nginx
-  file: name=/apps/pkg state=directory
+  file: 
+    name: {{ pkg_path }}
+    state: directory
 
-# - name: download package
-#   shell: wget -c http://nginx.org/download/nginx-1.22.0.tar.gz -O /apps/pkg/
+- shell: "[ -f {{ pkg_path }}/nginx-{{ nginx_version }}.tar.gz ] || echo 'failed'"
+  register: nginx_pkg_check
+
+- name: copy nginx package
+  copy:
+    src: ../../../../files/nginx-{{ nginx_version }}.tar.gz
+    dest: {{ pkg_path }}
+  when: "'failed' in nginx_pkg_check.stdout"
 
 - name: unarchive package
-  unarchive: src=http://nginx.org/download/nginx-{{ nginx_version }}.tar.gz dest=/apps/pkg/ copy=no owner=nginx
+  unarchive: 
+    src: {{ pkg_path }}/nginx-{{ nginx_version }}.tar.gz
+    dest: {{ pkg_path }}
+    copy: no 
+    owner: nginx
 
-- name: make nginx
-  shell: 'cd /apps/pkg/nginx-{{ nginx_version }} && \
-  ./configure --prefix=/apps/nginx-{{ nginx_version }} \
-  --with-http_ssl_module \
-  --with-http_v2_module \
-  --with-http_realip_module \
-  --with-http_stub_status_module \
-  --with-http_gzip_static_module \
-  --with-pcre \
-  --with-stream \
-  --with-stream_ssl_module \
-  --with-stream_realip_module && \
-  make -j $(nproc) && make install'
+- shell: "which nginx || echo 'failed'"
+  register: app_check
 
-- name: link nginx
-  file: src=/apps/nginx-{{ nginx_version }} dest={{ app_dir }} state=link owner=nginx
+- block:
+  - name: make nginx
+    shell: "cd {{ pkg_path }}/nginx-{{ nginx_version }} && {{ make_opt }} && make -j $(nproc) && make install"
 
-- name: create nginx conf directory
-  file: path={{ app_dir }}/conf/conf.d state=directory owner=nginx
+  - name: link nginx
+    file: 
+      src: /apps/nginx-{{ nginx_version }} 
+      dest: {{ app_dir }} 
+      state: link 
+      owner: nginx
 
-- name: env 
-  shell: echo "PATH=\$PATH:{{ app_dir }}/sbin/" > /etc/profile.d/nginx.sh && chmod a+x /etc/profile.d/nginx.sh && source /etc/profile
+  - name: create nginx conf directory
+    file: 
+      path: {{ app_dir }}/conf/conf.d 
+      state: directory 
+      owner: nginx
+
+  - name: env 
+    shell: echo "PATH=\$PATH:{{ app_dir }}/sbin/" > /etc/profile.d/nginx.sh && chmod a+x /etc/profile.d/nginx.sh && source /etc/profile
+    
+  when: "'failed' in app_check.stdout"

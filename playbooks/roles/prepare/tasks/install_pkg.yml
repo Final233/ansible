@@ -39,3 +39,4 @@
     - git
     - socat
     - rsync
+    - cmake

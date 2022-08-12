@@ -15,6 +15,26 @@ basepath=$(
 
 cd $basepath
 
+_logger() {
+    TIMESTAMP=$(date +'%Y-%m-%d %H:%M:%S')
+    case "$1" in
+    debug)
+        echo -e "$TIMESTAMP \033[36mDEBUG\033[0m ${@:2}"
+        ;;
+    info)
+        echo -e "$TIMESTAMP \033[32mINFO\033[0m ${@:2}"
+        ;;
+    warn)
+        echo -e "$TIMESTAMP \033[33mWARN\033[0m ${@:2}"
+        ;;
+    error)
+        echo -e "$TIMESTAMP \033[31mERROR\033[0m ${@:2}"
+        ;;
+    *) ;;
+
+    esac
+}
+
 _usage() {
     echo -e "\033[33mUsage:\033[0m $0 setup <num> <playbook>"
     cat <<EOF
@@ -46,30 +66,45 @@ examples: $0 setup 01 (or $0 setup prepare)
 EOF
 }
 
+_debug() {
+    DEBUG="${@: -1}"
+    case "$DEBUG" in
+    -v)
+        true
+        ;;
+    -vv)
+        true
+        ;;
+    -vvv)
+        true
+        ;;
+    -C)
+        DEBUG="-C"
+        unset ANSIBLE_LOG_PATH
+        ;;
+    -Cv)
+        DEBUG="-C -v"
+        unset ANSIBLE_LOG_PATH
+        ;;
+    -Cvv)
+        DEBUG="-C -vv"
+        unset ANSIBLE_LOG_PATH
+        ;;
+    -Cvvv)
+        DEBUG="-C -vvv"
+        unset ANSIBLE_LOG_PATH
+        ;;
+    *)
+        DEBUG=""
+        ;;
+    esac
+}
+
 _vars() {
     date=$(date +%Y%m%d)
     src_file=""
     dest_file=""
     tags=""
-    if [ $# -ge 2 ]; then
-        if [ $DEBUG == "-vvv" ]; then
-            DEBUG="-vvv"
-        elif [ $DEBUG == "-vv" ]; then
-            DEBUG="-vv"
-        elif [ $DEBUG == "-v" ]; then
-            DEBUG="-v"
-        elif [ $DEBUG == "-C" ]; then
-            DEBUG="-C"
-        elif [ $DEBUG == "-Cv" ]; then
-            DEBUG="-C -v"
-        elif [ $DEBUG == "-Cvv" ]; then
-            DEBUG="-C -vv"
-        elif [ $DEBUG == "-Cvvv" ]; then
-            DEBUG="-C -vvv"
-        else
-            DEBUG=""
-        fi
-    fi
 }
 
 _setup() {
@@ -98,6 +133,9 @@ _setup() {
     07 | rsync_file)
         PLAY_BOOK="07.rsync_file.yml"
         ;;
+    08 | mariadb)
+        PLAY_BOOK="08.mariadb.yml"
+        ;;
     99 | all)
         PLAY_BOOK="99.setup.yml"
         ;;
@@ -112,7 +150,6 @@ _cmd() {
     case $1 in
     setup)
         _setup "$@"
-        # echo $PLAY_BOOK
         if [ $# -ge 4 ]; then
             if [ $PLAY_BOOK == "07.rsync_file.yml" ]; then
                 src_file="-e src_file=$3"
@@ -124,30 +161,38 @@ _cmd() {
         fi
         log_path="logs/${PLAY_BOOK/.yml/}-$date.log"
         export ANSIBLE_LOG_PATH="$basepath/$log_path"
+        _debug "$@"
         cmd="ansible-playbook -i inventory/hosts -e @config.yml $src_file $dest_file $tags playbooks/$PLAY_BOOK $DEBUG -v"
+        _logger info $cmd
         $cmd
         ;;
     limit)
         _setup "$@"
         log_path="logs/${PLAY_BOOK/.yml/}-$date.log"
         export ANSIBLE_LOG_PATH="$basepath/$log_path"
+        _debug "$@"
         host=$3
         if [ $# -ge 5 ]; then
-            src_file="-e src_file=$4"
-            dest_file="-e dest_file=$5"
+            if [ $PLAY_BOOK == "07.rsync_file.yml" ]; then
+                src_file="-e src_file=$4"
+                dest_file="-e dest_file=$5"
+            fi
         fi
         if [ "$4" == "--skip-tags" ]; then
             tags="--skip-tags $5"
         fi
         cmd="ansible-playbook -i inventory/hosts -e @config.yml  $src_file $dest_file playbooks/$PLAY_BOOK $tags --limit $host $DEBUG -v"
+        _logger info $cmd
         $cmd
         ;;
     ping)
         cmd="ansible-playbook -i inventory/hosts -e @config.yml playbooks/${PLAY_BOOK:=00.ping.yml}"
+        _logger info $cmd
         $cmd
         ;;
     test)
         cmd="ansible-playbook -i inventory/hosts -e @config.yml playbooks/${PLAY_BOOK:=98.test.yml} $DEBUG -v"
+        _logger info $cmd
         $cmd
         ;;
     *)
@@ -155,25 +200,6 @@ _cmd() {
         ;;
     esac
 }
-
-DEBUG="${@: -1}"
-if [ $DEBUG == "-vvv" ]; then
-    DEBUG="-vvv"
-elif [ $DEBUG == "-vv" ]; then
-    DEBUG="-vv"
-elif [ $DEBUG == "-v" ]; then
-    DEBUG="-v"
-elif [ $DEBUG == "-C" ]; then
-    DEBUG="-C"
-elif [ $DEBUG == "-Cv" ]; then
-    DEBUG="-C -v"
-elif [ $DEBUG == "-Cvv" ]; then
-    DEBUG="-C -vv"
-elif [ $DEBUG == "-Cvvv" ]; then
-    DEBUG="-C -vvv"
-else
-    DEBUG=""
-fi
 
 _vars
 _cmd "$@"

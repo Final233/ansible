@@ -1,6 +1,7 @@
 # 如何跨角色执行某一个任务，若使用到copy模块，注意文件路径
 - include: roles/public/tasks/group.yml
 - include: roles/public/tasks/user.yml
+- include: download.yml
 - include: install.yml
 - include: template.yml
 - include: roles/public/tasks/start.yml
