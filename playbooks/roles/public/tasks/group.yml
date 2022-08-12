@@ -1,2 +1,5 @@
 - name: create group
-  group: name={{ group_name }} system=yes gid={{ group_gid }}
+  group:
+    name: {{ group_name }}
+    system: yes 
+    gid: {{ group_gid }}

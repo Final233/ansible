@@ -1,3 +1,5 @@
 - name: 设置资源限制
-  copy: src=limits.conf dest=/etc/security/limits.d/ulimits.conf
+  copy: 
+    src: limits.conf 
+    dest: /etc/security/limits.d/ulimits.conf
   notify: source env

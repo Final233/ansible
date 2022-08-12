@@ -1,2 +1,7 @@
 - name: create user
-  user: name={{ user_name }} uid={{ user_uid }} group={{ group_name }} system=yes shell=/sbin/nologin
+  user: 
+    name: {{ user_name }}
+    uid: {{ user_uid }} 
+    group: {{ group_name }}
+    system: yes 
+    shell: /sbin/nologin

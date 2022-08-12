@@ -1,3 +1,10 @@
 - name: 同步文件
-  synchronize: src={{ src_file }} dest={{ dest_file }} compress=yes delete=yes checksum=yes copy_links=yes perms=yes
+  synchronize: 
+    src: {{ src_file }} 
+    dest: {{ dest_file }} 
+    compress: yes 
+    delete: yes 
+    checksum: yes 
+    copy_links: yes 
+    perms: yes
   # synchronize: src=/tmp/data dest=/tmp/ compress=yes delete=yes checksum=yes --exclude=.git

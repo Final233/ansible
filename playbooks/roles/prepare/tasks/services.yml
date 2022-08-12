@@ -1,5 +1,8 @@
 - name: 关闭无用服务
-  service: name={{ item }} state=stopped enabled=false
+  service: 
+    name: {{ item }} 
+    state: stopped 
+    enabled: false
   ignore_errors: yes
   with_items: 
     - postfix.service

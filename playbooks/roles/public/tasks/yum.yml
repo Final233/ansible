@@ -1,2 +1,3 @@
 - name: install package
-  yum: name={{ package_name }}
+  yum: 
+    name: {{ package_name }}

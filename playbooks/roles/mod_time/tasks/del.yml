@@ -1,4 +1,6 @@
 - name: 删除备份目录
-  file: path=/home/tdgw/scripts/backup state=absent
+  file: 
+    path: /home/tdgw/scripts/backup
+    state: absent
   tags:
     - del_mod_time_back
