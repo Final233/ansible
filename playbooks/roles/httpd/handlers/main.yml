@@ -1,0 +1,1 @@
+- include: roles/public/tasks/restart.yml

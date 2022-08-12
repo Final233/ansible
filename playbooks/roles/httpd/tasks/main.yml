@@ -1,4 +1,4 @@
 - include: roles/public/tasks/user.yml
-- include: yum.yml
+- include: roles/public/tasks/yum.yml
 - include: copyfile.yml
 - include: roles/public/tasks/start.yml
