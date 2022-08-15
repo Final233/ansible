@@ -1,0 +1,15 @@
+- name: run scripts
+  script: "../../../../cmd/{{ script_name }}"
+  register: script_result
+  
+# - name: dep scripts
+#   copy: src="../../../../cmd/{{ script_name }}" dest=/tmp/ mode=0755
+
+# - name: run
+#   command: "/tmp/{{ script_name }}"
+#   register: script_result
+
+- name: print
+  debug:
+    msg: "{{ script_result.stdout_lines }}"
+    # msg: "{{ script_result.stdout }}"

@@ -47,6 +47,7 @@ available steps:
     05  memcached          to setup memcached
     06  mod_time           to setup mod_time
     07  rysnc_file         to setup rsync_file
+    08  mariadb            to setup mariadb
     99  all                to run 01~99 all at once
 
 examples: $0 setup 01 (or $0 setup prepare)
@@ -60,6 +61,7 @@ examples: $0 setup 01 (or $0 setup prepare)
          $0 setup 07 /tmp/dir/ /data/ (cp -rf /tmp/dir/* /data/dir/.) ---- rsync file
          $0 setup 07 /tmp/dir /data/ (cp -rf /tmp/dir /data/dir) ---- rsync dir
 
+         $0 scripts system_info.sh ($0 scripts scripts.sh)
          $0 setup all
          $0 setup 01 -vvv (or -v or -vv 显示详细信息)
          $0 setup 01 -C (测试运行)
@@ -191,7 +193,19 @@ _cmd() {
         $cmd
         ;;
     test)
+        _debug "$@"
         cmd="ansible-playbook -i inventory/hosts -e @config.yml playbooks/${PLAY_BOOK:=98.test.yml} $DEBUG"
+        _logger info $cmd
+        $cmd
+        ;;
+    scripts)
+        _debug "$@"
+        if [[ "$2" =~ "sh" ]];then
+            scripts_name="-e script_name=$2"
+        else
+            scripts_name="-e script_name=scripts.sh"
+        fi
+        cmd="ansible-playbook -i inventory/hosts -e @config.yml $scripts_name playbooks/${PLAY_BOOK:=97.scripts.yml} $DEBUG"
         _logger info $cmd
         $cmd
         ;;
