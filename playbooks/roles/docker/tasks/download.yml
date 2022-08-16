@@ -1,0 +1,22 @@
+- name: 检测docker是否安装
+  shell: systemctl is-active docker
+  register: check_docker
+  ignore_errors: True
+
+- block:
+    - shell: "[ -f {{ files }}/docker-{{ docker_version }}.tar.gz ] || echo 'failed'"
+      register: file_check
+      connection: local
+      changed_when: false
+
+    - name: download docker package
+      get_url:
+        url: "https://download.docker.com/linux/static/stable/{{ arch }}/docker-{{ docker_version }}.tgz"
+        dest: "{{ files }}"
+        validate_certs: no
+        mode: 0644
+      when: "'failed' in file_check.stdout"
+      connection: local
+
+  when: check_docker.rc != 0
+  connection: local

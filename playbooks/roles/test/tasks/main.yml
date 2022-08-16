@@ -1,10 +1,6 @@
-- shell: echo x
-  register: checkx
-
-- block:
-  - name: test1
-    shell: echo 1
-
-  - name: test2
-    shell: echo 2
-  when: "'xx' in checkx.stdout"
+- command: echo faild
+  register: result
+  failed_when: "'faild' in result.stdout"
+  #failed_when: false 不满足条件,任务正常执行
+  #failed_when: true 满足条件,使用任务失败
+- debug: msg=" echo failed_when"

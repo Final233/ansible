@@ -9,7 +9,7 @@
 #********************************************************************
 
 basepath=$(
-    cd $(dirname $0)./
+    cd $(dirname $0)
     pwd
 )
 
@@ -48,23 +48,25 @@ available steps:
     06  mod_time           to setup mod_time
     07  rysnc_file         to setup rsync_file
     08  mariadb            to setup mariadb
+    09  docker             to setup docker
     99  all                to run 01~99 all at once
 
-examples: $0 setup 01 (or $0 setup prepare)
-	 $0 setup 02 (or $0 setup nginx)
-         $0 setup 06 --skip-tags del_mod_time_back
-         $0 limit 06 192.168.10.88 (对hosts中单个IP进行执行)
+examples: 
+        $0 setup 01 (or $0 setup prepare)
+        $0 setup 02 (or $0 setup nginx)
+        $0 setup 06 --skip-tags del_mod_time_back
+        $0 limit 06 192.168.10.88 (对hosts中单个IP进行执行)
 
-         $0 setup 07 (or $0 setup rysnc_file)
-         $0 setup 07 /mnt/d/box/ansible /tmp/ (default cp -rf /mnt/d/box/ansible /tmp/)
-         $0 setup 07 /tmp/file /data/ (cp -f /tmp/file /data/file) ---- rsync file
-         $0 setup 07 /tmp/dir/ /data/ (cp -rf /tmp/dir/* /data/dir/.) ---- rsync file
-         $0 setup 07 /tmp/dir /data/ (cp -rf /tmp/dir /data/dir) ---- rsync dir
+        $0 setup 07 (or $0 setup rysnc_file)
+        $0 setup 07 /mnt/d/box/ansible /tmp/ (default cp -rf /mnt/d/box/ansible /tmp/)
+        $0 setup 07 /tmp/file /data/ (cp -f /tmp/file /data/file) ---- rsync file
+        $0 setup 07 /tmp/dir/ /data/ (cp -rf /tmp/dir/* /data/dir/.) ---- rsync file
+        $0 setup 07 /tmp/dir /data/ (cp -rf /tmp/dir /data/dir) ---- rsync dir
 
-         $0 scripts system_info.sh ($0 scripts scripts.sh)
-         $0 setup all
-         $0 setup 01 -vvv (or -v or -vv 显示详细信息)
-         $0 setup 01 -C (测试运行)
+        $0 scripts system_info.sh (or $0 scripts scripts.sh)
+        $0 setup all
+        $0 setup 01 -vvv (or -v or -vv 显示详细信息)
+        $0 setup 01 -C (测试运行)
 EOF
 }
 
@@ -138,6 +140,12 @@ _setup() {
     08 | mariadb)
         PLAY_BOOK="08.mariadb.yml"
         ;;
+    09 | docker)
+        PLAY_BOOK="09.docker.yml"
+        ;;
+    97 | scripts)
+        PLAY_BOOK="97.scripts.yml"
+        ;;
     99 | all)
         PLAY_BOOK="99.setup.yml"
         ;;
@@ -164,7 +172,7 @@ _cmd() {
         log_path="logs/${PLAY_BOOK/.yml/}-$date.log"
         export ANSIBLE_LOG_PATH="$basepath/$log_path"
         _debug "$@"
-        cmd="ansible-playbook -i inventory/hosts -e @config.yml $src_file $dest_file $tags playbooks/$PLAY_BOOK $DEBUG"
+        cmd="ansible-playbook -i ../inventory/hosts -e @../config.yml $src_file $dest_file $tags ../playbooks/$PLAY_BOOK $DEBUG"
         _logger info $cmd
         $cmd
         ;;
@@ -183,29 +191,29 @@ _cmd() {
         if [ "$4" == "--skip-tags" ]; then
             tags="--skip-tags $5"
         fi
-        cmd="ansible-playbook -i inventory/hosts -e @config.yml  $src_file $dest_file playbooks/$PLAY_BOOK $tags --limit $host $DEBUG"
+        cmd="ansible-playbook -i ../inventory/hosts -e @../config.yml  $src_file $dest_file ../playbooks/$PLAY_BOOK $tags --limit $host $DEBUG"
         _logger info $cmd
         $cmd
         ;;
     ping)
-        cmd="ansible-playbook -i inventory/hosts -e @config.yml playbooks/${PLAY_BOOK:=00.ping.yml}"
+        cmd="ansible-playbook -i ../inventory/hosts -e @../config.yml ../playbooks/${PLAY_BOOK:=00.ping.yml}"
         _logger info $cmd
         $cmd
         ;;
     test)
         _debug "$@"
-        cmd="ansible-playbook -i inventory/hosts -e @config.yml playbooks/${PLAY_BOOK:=98.test.yml} $DEBUG"
+        cmd="ansible-playbook -i ../inventory/hosts -e @../config.yml ../playbooks/${PLAY_BOOK:=98.test.yml} $DEBUG"
         _logger info $cmd
         $cmd
         ;;
     scripts)
         _debug "$@"
-        if [[ "$2" =~ "sh" ]];then
+        if [[ "$2" =~ "sh" ]]; then
             scripts_name="-e script_name=$2"
         else
             scripts_name="-e script_name=scripts.sh"
         fi
-        cmd="ansible-playbook -i inventory/hosts -e @config.yml $scripts_name playbooks/${PLAY_BOOK:=97.scripts.yml} $DEBUG"
+        cmd="ansible-playbook -i ../inventory/hosts -e @../config.yml $scripts_name ../playbooks/${PLAY_BOOK:=97.scripts.yml} $DEBUG"
         _logger info $cmd
         $cmd
         ;;

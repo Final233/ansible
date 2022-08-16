@@ -1,5 +1,7 @@
 # ansible_ssh_user: root
+# 下载软件包存放目录
 files: /mnt/d/box/ansible/files
-test_var: "test"
 src_file: /mnt/d/box/ansible
 dest_file: /tmp/
+# CPU架构
+arch: x86_64

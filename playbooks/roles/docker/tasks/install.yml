@@ -1,0 +1,74 @@
+- shell: systemctl is-active docker
+  register: docker_check
+  ignore_errors: True
+
+- block:
+    - name: mkdir docker dir
+      file:
+        name: "{{ item }}"
+        state: directory
+      with_items:
+        - /etc/docker
+        - "{{ app_dir }}/bin"
+
+    - shell: "[ -f {{ pkg_path }}/docker-{{ docker_version }}.tgz ] || echo 'failed'"
+      register: docker_pkg_check
+      changed_when: false
+
+    - name: copy docker package
+      copy:
+        src: ../../../../files/docker-{{ docker_version }}.tgz
+        dest: "{{ pkg_path }}"
+      when: "'failed' in docker_pkg_check.stdout"
+
+    - name: unarchive package
+      unarchive:
+        src: "{{ pkg_path }}/docker-{{ docker_version }}.tgz"
+        dest: "{{ pkg_path }}"
+        copy: no
+        # remote_src: yes
+
+    - name: link docker二进制文件
+      file:
+        src: "{{ pkg_path }}/docker/{{ item }}"
+        dest: "{{ app_dir }}/bin/{{ item }}"
+        mode: 0755
+        state: link
+      with_items:
+        - containerd
+        - containerd-shim
+        - ctr
+        - docker
+        - dockerd
+        - docker-init
+        - docker-proxy
+        - runc
+
+    - name: env
+      shell: echo "PATH=\$PATH:{{ app_dir }}/bin/" > /etc/profile.d/docker.sh && chmod a+x /etc/profile.d/docker.sh && source /etc/profile
+
+    - shell: "ping aliyun.com -c 3 | tr '/' ' ' | awk '/rtt/{if($8<40) {print 200} else {print $8}}'"
+      register: check_mirros
+      changed_when: false
+
+    - name: docker国内镜像加速
+      copy:
+        src: daemon.json
+        dest: /etc/docker/daemon.json
+      when: "'200' in check_mirros.stdout"
+
+    - name: 创建docker的systemd unit文件
+      template:
+        src: docker.service.j2
+        dest: /etc/systemd/system/docker.service
+
+    - name: start docker
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+  when: docker_check.rc != 0
+
+- debug:
+    msg: "{{ docker_check.rc }}"

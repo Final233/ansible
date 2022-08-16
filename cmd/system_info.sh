@@ -88,10 +88,29 @@ disk_sda_await=$(iostat -kx | awk '/sda/{print $10"ms"}')
 # 向设备发出I/O请求的运行时间百分比(设备的带宽利用率)。当这个值接近100%时，设备就会饱和
 disk_sda_util=$(iostat -kx | awk '/sda/{print $NF}')
 
+# 系统运行时间统计
+system_run_time=$(awk -F. '{run_days=$1 / 86400;run_hour=($1 % 86400)/3600;run_minute=($1 % 3600)/60;run_second=$1 % 60;printf("系统已运行：%d天%d时%d分%d秒",run_days,run_hour,run_minute,run_second)}' /proc/uptime)
+# 内核版本
+kernel_version=$(uname -r)
+# 硬件平台架构
+hardware_platform=$(uname -i)
+# 操作系统名称
+os_name=$(sed -rn 's/PRETTY_NAME="(.*)"/\1/p' /etc/os-release)
+# 连接状态统计
+# connect_status=$(ss -s)
+# 本机IP列表
 local_ip=$(ip a | tr / ' ' | awk '/inet /{print $2}' | grep -v 127.0.0.1)
 
 _separator
 _printf info time: $TIMESTAMP
+_printf info "系统已运行:" $system_run_time
+_printf info "操作系统:" $os_name
+_printf info "内核版本:" $kernel_version
+_printf info "硬件架构:" $hardware_platform
+_printf info local_ip: $local_ip
+_printf info "打印硬盘超过80%的分区"
+df -Ph | sed s/%//g | awk '{ if($5 > 80) print $0;}'
+_separator
 _printf info "cpu model name:" $cpu_model
 _printf info "cpu core num:" $cpu_core_num
 _printf info "cpu user space:" $cpu_user
@@ -115,4 +134,8 @@ _printf info "IO请求队列平均长度:" $disk_sda_avgqu_sz
 _printf info "发送给设备的I/O请求的平均时间:" $disk_sda_await
 _printf info "向设备发出I/O请求的运行时间百分比(设备的带宽利用率):" $disk_sda_util
 _separator
-_printf info local_ip: $local_ip
+_printf info "connect status" 
+ss -s
+_separator
+_printf info "network io list" 
+sar -n DEV 1 1
