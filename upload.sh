@@ -14,7 +14,7 @@ basepath=$(
 cd $basepath/../
 
 DATE=$(date +%F-%T)
-rm -f ../logs/*.log ../files/*
+rm -f logs/*.log files/*
 
 # git rm -r --cached
 git add -A
