@@ -1,0 +1,6 @@
+# user_name: nginx
+# user_uid: 2000
+# group_name: nginx
+# group_gid: 2000
+service_name: keepalived
+package_name: keepalived

@@ -1,0 +1,116 @@
+#---------------------------------------------------------------------
+# Example configuration for a possible web application.  See the
+# full configuration options online.
+#
+#   http://haproxy.1wt.eu/download/1.4/doc/configuration.txt
+#
+#---------------------------------------------------------------------
+
+#---------------------------------------------------------------------
+# Global settings
+#---------------------------------------------------------------------
+global
+    # to have these messages end up in /var/log/haproxy.log you will
+    # need to:
+    #
+    # 1) configure syslog to accept network log events.  This is done
+    #    by adding the '-r' option to the SYSLOGD_OPTIONS in
+    #    /etc/sysconfig/syslog
+    #
+    # 2) configure local2 events to go to the /var/log/haproxy.log
+    #   file. A line like the following can be added to
+    #   /etc/sysconfig/syslog
+    #
+    #    local2.*                       /var/log/haproxy.log
+    #
+    log         127.0.0.1 local2
+
+    chroot      /var/lib/haproxy # 锁定运行目录
+    pidfile     /var/run/haproxy.pid # pid文件路径
+    maxconn     4000 # 每个haproxy进程的最大并发连接数
+    user        haproxy
+    group       haproxy
+    daemon # 以守护进程运行
+    # nbproc # 开启的haproxy进程数，与CPU保持一致
+    # nbthread # 指定每个haproxy进程开启的线程数，默认为每个进程一个线程
+    # cpu-map 1 0 # 绑定haproxy 进程至指定CPU,第一个工作进程绑定在第0个CPU，CPU序列从0开始
+
+    # turn on stats unix socket
+    stats socket /var/lib/haproxy/stats mode 600 level admin
+
+#---------------------------------------------------------------------
+# common defaults that all the 'listen' and 'backend' sections will
+# use if not designated in their block
+#---------------------------------------------------------------------
+defaults
+    mode                    http
+    log                     global
+    option                  httplog
+    option                  dontlognull
+    option http-server-close
+    option forwardfor       except 127.0.0.0/8
+    option                  redispatch # 确保了用户端请求不会被调度到一个宕机的服务器上
+    retries                 3
+    timeout http-request    10s
+    timeout queue           1m
+    timeout connect         30s # 转发客户端请求到后端server的最长连接时间；这个时间是定义代理连接后端服务器的超时时长
+    timeout client          10m # 与客户端的最长空闲时间
+    timeout server          10m # 转发客户端请求到后端服务端的超时超时时长；这个时间是服务端响应代理的超时时长
+    timeout http-keep-alive 120s # session 会话保持超时时间，范围内会转发到相同的后端服务器
+    timeout check           5s # 对后端服务器的检测超时时间
+    maxconn                 3000 
+    # maxsslconn              3000 # #SSL每个haproxy进程ssl最大连接数
+    # maxconnrate             100000 #每个进程每秒最大连接数
+    # spread-checks           5 # 后端server状态check随机提前或延迟百分比时间，建议2-5(20%-50%)之间
+    compression algo gzip # 启用http协议中的压缩机制，常用算法有gzip deflate
+    compression type compression type text/plain text/html text/css text/xmltext/javascript application/javascript # 选择压缩的文件类型
+
+#---------------------------------------------------------------------
+listen stats
+    bind {{ HA_VIP }}:8888
+    # bind 127.0.0.1:8888
+    stats enable # 启用stats page
+    stats hide-version # 隐藏haproxy版本
+    stats uri /status # 配置访问URL，定义stats page uri，默认值：/haproxy?stats
+    stats realm HAPorxy\\ Stats\\ Page # 账户认证时的提示信息
+    stats auth haproxy:haproxy # 认证时的账号和密码，默认为空
+    stats auth admin:admin
+    stats refresh 30s # 设定自动刷新时间间隔
+    stats admin if TRUE
+
+# 4层负载
+listen redis_port
+    bind :6379
+    mode tcp
+    balance leastconn # 最少连接算法，适用于长连接场景
+    server 192.168.10.101 192.168.10.101:6379 check
+    server 192.168.10.102 192.168.10.102:6379 check backup
+
+# cookice
+listen WEB_PORT_80
+    bind :80
+    mode http
+    # balance roundrobin # 动态轮询,支持权重的运行时调整，支持慢启动，每个后端中最多支持4095个server
+    balance static-rr # 静态轮询,不支持权重的运行时调整，不支持慢启动,对后端无限制
+    # balance leastconn # 最少连接算法，适用于长连接场景
+    # balance first # 根据服务器在列表中的位置，自上而下进行调度；前面服务器的连接数达到上限，新请求才会分配给下一台服务
+    # balance source # 源地址hash算法；类似LVS中的sh算法；hash类的算法动态与否取决于hash-type的值
+    # balance uri # 对URI的左半部分做hash计算，并由服务器总权重相除以后派发至某挑出的服务器,需要完成的URL
+    # balance url_param # 对用户请求的uri的<params>部分中的参数的值作hash计算，用于追踪用户
+    # balance hdr(<name>) # 对于每个http请求，此处由<name>指定的http首部将会被取出做hash计算； 如hdr(Cookie)使用cookie首部做hash，这样使用更加灵活
+    cookie SERVER-COOKIE insert indirect nocache
+    server {{ WEB1.IP }} {{ WEB1.IP }}:{{ WEB1.PORT }} cookie {{ WEB1.HOST }} check inter 3000 fall 3 rise 5
+    server {{ WEB2.IP }} {{ WEB2.IP }}:{{ WEB2.PORT }} cookie {{ WEB2.HOST }} check inter 3000 fall 3 rise 5
+    # errorloc303 403 https://baidu.com # 当用户访问页面状态码返回为403时，重写向至百度，定义错误重写向
+    # errorfile 404 /tmp/404.html # 当用户访问页面状态码返回404时，将/tmp/404.html页面结果返回给用户,指令旧版本支持2.2.8的版本不支持
+
+# listen web_ssl_host
+#     bind 192.168.10.2:80
+#     bind 192.168.10.2:443 ssl crt /etc/haproxy/ssl/haproxy.pem
+#     mode http
+#     redirect scheme https if !{ ssl_fc }    #把80端口的请求重向定443
+#     http-request set-header X-Forwarded-Port %[dst_port]
+#     http-request add-header X-Forwarded-Proto https if { ssl_fc }
+#     cookie SERVER-COOKIE insert indirect nocache
+#     server 192.168.10.3 192.168.10.3:80 check inter 3000 fall 3 rise 5
+#     server 192.168.10.4 192.168.10.4:80 check inter 3000 fall 3 rise 5

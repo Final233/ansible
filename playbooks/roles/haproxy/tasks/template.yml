@@ -1,0 +1,11 @@
+- name: copy haproxy conf file
+  template:
+    src: haproxy.cfg.j2
+    dest: /etc/haproxy/haproxy.cfg
+  notify: restart service
+
+- name: 修改内核参数
+  copy: 
+    src: sysctl.conf 
+    dest: /etc/sysctl.d/89-sysctl.conf 
+  notify: sysctl -p

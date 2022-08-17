@@ -1,9 +1,9 @@
 - name: restart service
   service: 
-    name: {{ service_name }}
+    name: "{{ service_name }}"
     state: restarted
 
 - name: reload service
   service: 
-    name: {{ service_name }} 
+    name: "{{ service_name }}"
     state: reloaded

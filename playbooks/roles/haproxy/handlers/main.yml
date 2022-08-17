@@ -1,0 +1,4 @@
+- include: roles/public/handlers/main.yml
+
+- name: sysctl -p
+  shell: "sysctl -p /etc/sysctl.d/89-sysctl.conf"

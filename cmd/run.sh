@@ -49,6 +49,7 @@ available steps:
     07  rysnc_file         to setup rsync_file
     08  mariadb            to setup mariadb
     09  docker             to setup docker
+    10  keepalived         to setup keepalived
     99  all                to run 01~99 all at once
 
 examples: 
@@ -142,6 +143,12 @@ _setup() {
         ;;
     09 | docker)
         PLAY_BOOK="09.docker.yml"
+        ;;
+    10 | keepalived)
+        PLAY_BOOK="10.keepalived.yml"
+        ;;
+    11 | haproxy)
+        PLAY_BOOK="11.haproxy.yml"
         ;;
     97 | scripts)
         PLAY_BOOK="97.scripts.yml"

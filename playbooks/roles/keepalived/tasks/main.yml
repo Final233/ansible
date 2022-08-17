@@ -1,0 +1,3 @@
+- include: roles/public/tasks/yum.yml
+- include: template.yml
+- include: roles/public/tasks/start.yml

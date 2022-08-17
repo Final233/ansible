@@ -1,0 +1,19 @@
+- name: copy keepalived backup conf file
+  template:
+    src: keepalived.conf.backup.j2
+    dest: /etc/keepalived/keepalived.conf
+  when: ansible_default_ipv4.address == "{{ BACKUP_IP }}"
+  notify: restart service
+
+- name: copy keepalived master conf file
+  template:
+    src: keepalived.conf.master.j2
+    dest: /etc/keepalived/keepalived.conf
+  when: ansible_default_ipv4.address == "{{ MASTER_IP }}"
+  notify: restart service
+
+- name: copy keepalived bash script
+  copy:
+    src: notify.sh
+    dest: /etc/keepalived/
+    mode: 0755
