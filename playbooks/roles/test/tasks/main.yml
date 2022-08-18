@@ -1,6 +1,2 @@
-- command: echo faild
-  register: result
-  failed_when: "'faild' in result.stdout"
-  #failed_when: false 不满足条件,任务正常执行
-  #failed_when: true 满足条件,使用任务失败
-- debug: msg=" echo failed_when"
+- name: test
+  shell: "echo {{ inventory_hostname }}"

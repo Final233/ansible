@@ -36,3 +36,33 @@ HA_VIP: "192.168.10.233"
 WEB1: { HOST: web1, IP: 192.168.10.88, PORT: 80 }
 WEB2: { HOST: web2, IP: 192.168.10.89, PORT: 8080 }
 ####################################################################
+# kubernetes
+####################################################################
+# Binaries Directory 
+# kubernetes etcd 
+bin_dir: "/opt/kube/bin"
+# CA and other components cert/key Directory
+ca_dir: "/etc/kubernetes/ssl"
+# Service proxy mode of kube-proxy: 'iptables' or 'ipvs'
+PROXY_MODE: "ipvs"
+####################################################################
+# CA
+# Deploy Directory (kubeasz workspace)
+base_dir: "{{ files }}"
+# Directory for a specific cluster
+# cluster_dir: "{{ base_dir }}/clusters/_cluster_name_"
+cluster_dir: "{{ base_dir }}"
+# 证书时效
+# default: ca will expire in 100 years
+# default: certs issued by the ca will expire in 50 years
+CA_EXPIRY: "876000h"
+CERT_EXPIRY: "438000h"
+CUSTOM_EXPIRY: "438000h"
+####################################################################
+# etcd 
+ETCD_DATA_DIR: "/var/lib/etcd"
+# etcd veriosn
+ETCD_VERIOSN: 3.4.20
+# 设置不同的wal目录，可以避免磁盘io竞争，提高性能
+ETCD_WAL_DIR: ""
+####################################################################

@@ -50,6 +50,7 @@ available steps:
     08  mariadb            to setup mariadb
     09  docker             to setup docker
     10  keepalived         to setup keepalived
+    11  haproxy            to setup haproxy
     99  all                to run 01~99 all at once
 
 examples: 
@@ -149,6 +150,15 @@ _setup() {
         ;;
     11 | haproxy)
         PLAY_BOOK="11.haproxy.yml"
+        ;;
+    12 | kube-pre)
+        PLAY_BOOK="12.kube-pre.yml"
+        ;;
+    13 | etcd)
+        PLAY_BOOK="13.etcd.yml"
+        ;;
+    ca)
+        PLAY_BOOK="ca.yml"
         ;;
     97 | scripts)
         PLAY_BOOK="97.scripts.yml"

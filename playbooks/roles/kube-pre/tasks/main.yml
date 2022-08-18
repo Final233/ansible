@@ -1,0 +1,26 @@
+- include: common.yml
+
+- name: 清理iptables规则
+  shell: iptables -F
+# 某些系统没有/usr/bin/python，需要配置一个软链接，否则connection: local的任务会失败
+# 如果仍旧出现任务失败，重新执行一遍即可 https://github.com/ansible/ansible/issues/64903
+- name: symlink /usr/bin/python -> /usr/bin/python3
+  raw: |
+    if [ -f /usr/bin/python3 ] && [ ! -f /usr/bin/python ]; then
+      ln --symbolic /usr/bin/python3 /usr/bin/python;
+    fi
+
+- name: prepare some dirs
+  file: name={{ item }} state=directory
+  with_items:
+    - "{{ bin_dir }}"
+    - "{{ ca_dir }}"
+    - /root/.kube
+    - /etc/cni/net.d
+
+- name: 添加 kubectl 自动补全
+  lineinfile:
+    dest: ~/.bashrc
+    state: present
+    regexp: "kubectl completion"
+    line: "source <(kubectl completion bash)"
