@@ -1,0 +1,24 @@
+- include: download.yml
+
+- name: 创建CNI 网络插件目录
+  file: path="{{ CNI_PATH }}" mode=0755 state=directory 
+
+- name: 分发CNI 网络插件
+  copy: src={{ cluster_dir }}/bin/{{ item }} dest={{ CNI_PATH }}/{{ item }} mode=0755
+  with_items:
+    - bandwidth
+    - bridge
+    - dhcp
+    - firewall
+    - host-device
+    - host-local
+    - ipvlan
+    - loopback
+    - macvlan
+    - portmap
+    - ptp
+    - sbr
+    - static
+    - tuning
+    - vlan
+    - vrf

@@ -1,0 +1,19 @@
+{# 用于kube-apiserver进行维护，并拥有管理K8S的完全权限 #}
+{# 参考https://github.com/easzlab/kubeasz/blob/master/docs/setup/01-CA_and_prerequisite.md #}
+{
+  "CN": "admin",
+  "hosts": [],
+  "key": {
+    "algo": "rsa",
+    "size": 2048
+  },
+  "names": [
+    {
+      "C": "CN",
+      "ST": "Shanghai",
+      "L": "Shanghai",
+      "O": "system:masters",
+      "OU": "System"
+    }
+  ]
+}

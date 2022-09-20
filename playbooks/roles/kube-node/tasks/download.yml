@@ -1,0 +1,34 @@
+- shell: "[ -f {{ cluster_dir }}/bin/bridge ]"
+  register: check_cni
+  connection: local
+  changed_when: false
+  run_once: true
+  ignore_errors: true
+
+- block:
+    - name: download package cni plugins1
+      get_url: 
+        url: "https://final233.ga/d/aliyun/bin/cni-plugins-linux-amd64-v{{ CNI_VERSION }}.tgz"
+        dest: "{{ files }}/package/cni-plugins-linux-amd64-v{{ CNI_VERSION }}.tgz"
+        validate_certs: no
+        mode: 0644
+      when: CNI_VERSION == CNI_VERSION_2
+
+    - name: download package cni plugins2
+      get_url: 
+        url: "https://github.com/containernetworking/plugins/releases/download/v{{ CNI_VERSION }}/cni-plugins-linux-amd64-v{{ CNI_VERSION }}.tgz"
+        dest: "{{ files }}/package/cni-plugins-linux-amd64-v{{ CNI_VERSION }}.tgz"
+        validate_certs: no
+        mode: 0644
+      when: CNI_VERSION != CNI_VERSION_2
+
+    - name: 本地提取cni plugins 二进制文件
+      unarchive:
+        src: "{{ files }}/package/cni-plugins-linux-amd64-v{{ CNI_VERSION }}.tgz"
+        dest: "{{ cluster_dir }}/bin"
+        mode: 0755
+        extra_opts:
+              - --strip-components=0
+  run_once: true
+  when: check_cni.rc != 0
+  connection: local

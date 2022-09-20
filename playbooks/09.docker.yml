@@ -1,5 +1,7 @@
-- hosts: all
+- hosts:
+    - kube_master
+    - kube_node
   remote_user: root
-  gather_facts: no
+  gather_facts: true
   roles:
-  - docker
+    - docker

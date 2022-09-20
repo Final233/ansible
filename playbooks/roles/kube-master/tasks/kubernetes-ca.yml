@@ -1,0 +1,60 @@
+- name: 注册变量 KUBERNETES_SVC_IP
+  shell: echo {{ SERVICE_CIDR }}|cut -d/ -f1|awk -F. '{print $1"."$2"."$3"."$4+1}'
+  register: KUBERNETES_SVC_IP
+  tags: change_cert
+
+- name: 设置变量 CLUSTER_KUBERNETES_SVC_IP
+  set_fact: CLUSTER_KUBERNETES_SVC_IP={{ KUBERNETES_SVC_IP.stdout }}
+  tags: change_cert
+
+- name: 创建 kubernetes 证书签名请求
+  template: src=kubernetes-csr.json.j2 dest={{ cluster_dir }}/ssl/kubernetes-csr.json
+  tags: change_cert
+  connection: local
+
+- name: 创建 kubernetes 证书和私钥
+  shell: "cd {{ cluster_dir }}/ssl && {{ base_dir }}/bin/cfssl gencert \
+    -ca=ca.pem \
+    -ca-key=ca-key.pem \
+    -config=ca-config.json \
+    -profile=kubernetes kubernetes-csr.json | {{ base_dir }}/bin/cfssljson -bare kubernetes"
+  tags: change_cert
+  connection: local
+
+- name: 分发 kubernetes证书
+  copy: src={{ cluster_dir }}/ssl/{{ item }} dest={{ ca_dir }}/{{ item }}
+  with_items:
+    - ca.pem
+    - ca-key.pem
+    - kubernetes.pem
+    - kubernetes-key.pem
+
+# 从 v1.8 开始，资源使用情况的度量（如容器的 CPU 和内存使用）可以通过 Metrics API 获取；前提是集群中要部署 Metrics Server，它从Kubelet 公开的Summary API采集指标信息，关于更多的背景介绍请参考如下文档：  
+# - Metrics Server[设计提案](https://github.com/kubernetes/community/blob/master/contributors/design-proposals/instrumentation/metrics-server.md)
+# 大致是说它符合k8s的监控架构设计，受heapster项目启发，并且比heapster优势在于：访问不需要apiserver的代理机制，提供认证和授权等；很多集群内组件依赖它（HPA,scheduler,kubectl top），因此它应该在集群中默认运行；部分k8s集群的安装工具已经默认集成了Metrics Server的安装，以下概述下它的安装：
+# - 1.metric-server是扩展的apiserver，依赖于[kube-aggregator](https://github.com/kubernetes/kube-aggregator)，因此需要在apiserver中开启相关参数。
+# - 2.需要在集群中运行deployment处理请求
+
+- name: 创建 aggregator proxy证书签名请求
+  template: src=aggregator-proxy-csr.json.j2 dest={{ cluster_dir }}/ssl/aggregator-proxy-csr.json
+  connection: local
+
+- name: 创建 aggregator-proxy证书和私钥
+  shell: "cd {{ cluster_dir }}/ssl && {{ base_dir }}/bin/cfssl gencert \
+        -ca=ca.pem \
+        -ca-key=ca-key.pem \
+        -config=ca-config.json \
+        -profile=kubernetes aggregator-proxy-csr.json | {{ base_dir }}/bin/cfssljson -bare aggregator-proxy"
+  connection: local
+
+- name: 分发 kubernetes aggregator 证书
+  copy: src={{ cluster_dir }}/ssl/{{ item }} dest={{ ca_dir }}/{{ item }}
+  with_items:
+    - aggregator-proxy.pem
+    - aggregator-proxy-key.pem
+  when: ('enable_aggregation_layer == "yes"')
+    
+
+
+
+

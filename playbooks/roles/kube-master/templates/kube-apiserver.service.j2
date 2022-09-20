@@ -32,9 +32,11 @@ ExecStart={{ bin_dir }}/kube-apiserver \
   --requestheader-extra-headers-prefix=X-Remote-Extra- \
   --requestheader-group-headers=X-Remote-Group \
   --requestheader-username-headers=X-Remote-User \
+{% if enable_aggregation_layer | bool %}
   --proxy-client-cert-file={{ ca_dir }}/aggregator-proxy.pem \
   --proxy-client-key-file={{ ca_dir }}/aggregator-proxy-key.pem \
   --enable-aggregator-routing=true \
+{% endif %}
   --v=2
 Restart=always
 RestartSec=5

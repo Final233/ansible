@@ -13,11 +13,11 @@ basepath=$(
 
 cd $basepath/../
 DATE=$(date +%F-%T)
-rm -f logs/*.log files/*
+rm -f logs/*.log files/package/*
 
-# # git rm -r --cached
+# git rm -r --cached
 git add -A
 git commit -m "$DATE"
 git push && echo 上传成功
-git gc
+# git gc
 

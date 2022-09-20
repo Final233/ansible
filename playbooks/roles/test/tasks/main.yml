@@ -1,2 +1,7 @@
+- debug:
+    msg: "{{ enable_aggregation_layer }}"
+
 - name: test
-  shell: "echo {{ inventory_hostname }}"
+  template:
+    src: 3.j2
+    dest: /tmp/1

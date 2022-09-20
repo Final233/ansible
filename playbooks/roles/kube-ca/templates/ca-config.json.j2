@@ -1,0 +1,34 @@
+
+{# signing：表示该证书可用于签名其他证书；生成的 ca.pem 证书中CA=TRUE；
+server auth：表示可以使用该证书 CA 对服务器提供的进行验证；
+client auth：表示可以使用该证书 CA 对客户端提供的进行验证；
+profile kubernetes包含server auth和client auth，所以可以签发不同类型的证书证书，默认50年
+profile kcfg在后面的kubeconfig证书管理中使用客户端 #}
+{
+  "signing": {
+    "default": {
+      "expiry": "{{ CERT_EXPIRY }}"
+    },
+    "profiles": {
+      "kubernetes": {
+        "usages": [
+            "signing",
+            "key encipherment",
+            "server auth",
+            "client auth"
+        ],
+        "expiry": "{{ CERT_EXPIRY }}"
+      }
+    },
+    "profiles": {
+      "kcfg": {
+        "usages": [
+            "signing",
+            "key encipherment",
+            "client auth"
+        ],
+        "expiry": "{{ CUSTOM_EXPIRY }}"
+      }
+    }
+  }
+}

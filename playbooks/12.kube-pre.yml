@@ -1,5 +1,16 @@
-- hosts: all
+- hosts:
+    - localhost
   remote_user: root
-  # gather_facts: no
+  gather_facts: false
   roles:
-  - kube-pre
+    - kube-download
+    - kube-ca
+    - kube-config
+
+- hosts:
+    - kube-master
+    - kube-node
+    - etcd
+  remote_user: root
+  roles:
+    - kube-pre

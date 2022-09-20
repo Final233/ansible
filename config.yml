@@ -3,6 +3,9 @@
 ####################################################################
 # 下载软件包存放目录
 files: /mnt/d/box/ansible/files
+base_dir: "{{ files }}"
+####################################################################
+# role rsysnc_file
 ####################################################################
 # rsync 源目录
 src_file: /mnt/d/box/ansible
@@ -10,14 +13,171 @@ src_file: /mnt/d/box/ansible
 dest_file: /tmp/
 ####################################################################
 # CPU架构
-arch: x86_64
+ARCH: x86_64
 # arch: s390x
+####################################################################
+# role kube-pre
+####################################################################
+# hosts解析主域名
+CUSTOM_DOMAIN: final233.gq
+# kube api vip 
+KUBE_API_VIP: 192.168.10.233
+# kube api domain
+KUBEAPI_DOMAIN: kubeapi.{{ CUSTOM_DOMAIN }}
+# 代理模式
+PROXY_MODE: "ipvs"
+# 时间同步地址
+NTP_SERVER: ntp.aliyun.com
+# 远程存放kubernetes二进制执行程序目录
+bin_dir: "/opt/kube/bin"
+# k8s 集群名称
+CLUSTER_NAME: k8s-01
+# kubeconfig 配置参数
+CONTEXT_NAME: "context-{{ CLUSTER_NAME }}"
+####################################################################
+# role kube-ca
+####################################################################
+# CA证书时间 默认100年，其他为50年
+CA_EXPIRY: "876000h"
+CERT_EXPIRY: "438000h"
+CUSTOM_EXPIRY: "438000h"
+# 本地存放k8s证书
+cluster_dir: "{{ base_dir }}/clusters/{{ CLUSTER_NAME }}"
+####################################################################
+# role etcd
+####################################################################
+# 远程主机存放ca目录
+ca_dir: "/etc/kubernetes/ssl"
+# etcd数据目录
+ETCD_DATA_DIR: "/var/lib/etcd"
+# etcd veriosn
+ETCD_VERIOSN: 3.4.20
+# 当版本等于 3.4.20时，使用自建网盘直链下载
+ETCD_VERIOSN_2: 3.4.20
+# 设置不同的wal目录，可以避免磁盘io竞争，提高性能
+ETCD_WAL_DIR: ""
+####################################################################
+# role kube-master
+####################################################################
+# kubernetes veriosn
+K8S_VER: "1.25.0"
+# kubernetes arch
+K8S_ARCH: amd64
+# Secure port for apiservers
+SECURE_PORT: "6443"
+# pod 端口运行范围
+NODE_PORT_RANGE: 30000-32767
+# 定义 K8S 服务 Service 虚拟 IP 地址段
+# SERVICE_CIDR: "10.68.0.0/16"
+SERVICE_CIDR: "10.0.0.0/24"
+# k8s 集群 master 节点证书配置，可以添加多个ip和域名（比如增加公网ip和域名）
+MASTER_CERT_HOSTS:
+  - "10.0.0.1"
+  - "{{ CUSTOM_DOMAIN }}"
+  - "{{ KUBE_API_VIP }}"
+  - "kubeapi.{{ CUSTOM_DOMAIN }}"
+  - "k8s.{{ CUSTOM_DOMAIN }}"
+# Cluster CIDR (Pod CIDR), not overlap with node(host) networking
+# CLUSTER_CIDR: "172.20.0.0/16"
+CLUSTER_CIDR: 10.244.0.0/16
+# node 节点上 pod 网段掩码长度（决定每个节点最多能分配的pod ip地址）
+# 如果flannel 使用 --kube-subnet-mgr 参数，那么它将读取该设置为每个节点分配pod网段
+# https://github.com/coreos/flannel/issues/847
+NODE_CIDR_LEN: 24
+####################################################################
+# role docker
+####################################################################
+# docker 版本
+# docker版本大于18.06.3时，-ce省略，如20.10.9
+# docker_version: 18.06.3-ce
+docker_version: 20.10.16
+# 自建网盘直链下载
+docker_version_2: 18.06.3-ce
+# [docker]容器存储目录
+DOCKER_STORAGE_DIR: "/var/lib/docker"
+# 国内镜像加速
+ENABLE_MIRROR_REGISTRY: true
+# [docker]开启Restful API
+ENABLE_REMOTE_API: false
+# [docker]信任的HTTP仓库
+# INSECURE_REG: '["http://easzlab.io.local:5000"]'
+INSECURE_REG: '["http://final233.ga:8888"]'
+# INSECURE_REG: '["https://docker.io"]'
+CRI_DOCKER: true
+CRI_DOCKER_VER: 0.2.5
+CRI_IMAGE: registry.aliyuncs.com/google_containers/pause:3.8
+CONTAINER_RUNTIME: docker
+####################################################################
+# role kube-node
+####################################################################
+# cni plugins version
+CNI_VERSION: 1.1.1
+CNI_VERSION_2: 1.1.1
+ENABLE_LOCAL_DNS_CACHE: true
+LOCAL_DNS_CACHE: 169.254.20.10
+# Cluster DNS Domain
+CLUSTER_DNS_DOMAIN: "cluster.local"
+# 配置为kube组件（kubelet,kube-proxy,dockerd等）预留的资源量
+# 数值设置详见templates/kubelet-config.yaml.j2
+KUBE_RESERVED_ENABLED: "no"
+# k8s 官方不建议草率开启 system-reserved, 除非你基于长期监控，了解系统的资源占用状况；
+# 并且随着系统运行时间，需要适当增加资源预留，数值设置详见templates/kubelet-config.yaml.j2
+# 系统预留设置基于 4c/8g 虚机，最小化安装系统服务，如果使用高性能物理机可以适当增加预留
+# 另外，集群安装时候apiserver等资源占用会短时较大，建议至少预留1g内存
+SYS_RESERVED_ENABLED: "no" 
+# node节点最大pod 数
+MAX_PODS: 110
+# Kubelet 根目录
+KUBELET_ROOT_DIR: "/var/lib/kubelet"
+####################################################################
+# role kube-net
+####################################################################
+# Network plugins supported: calico, flannel, kube-router, cilium, kube-ovn
+# CLUSTER_NETWORK: "calico"
+CLUSTER_NETWORK: "flannel"
+flannel_version: 0.19.2
+flannel_version_2: 0.19.1
+FLANNEL_BACKEND: "vxlan"
+DIRECT_ROUTING: false
+# 默认镜像
+flanneld_image: docker.io/rancher/mirrored-flannelcni-flannel:v0.19.2
+# CNI插件存放位置
+CNI_PATH: "/opt/cni/bin"
+####################################################################
+# kubernetes plugins enable
+####################################################################
+# 开发/测试环境建议开启
+enable_aggregation_layer: yes
+# codedns 安装
+dns_install: yes
+coredns_image_version: coredns/coredns:1.9.3
+node_local_dns_image: registry.cn-shanghai.aliyuncs.com/fl233/k8s-dns-node-cache:1.22.8
+# 需要将aggregation_layer开启
+metricsserver_install: yes
+metricsserver_image: registry.cn-shanghai.aliyuncs.com/fl233/metrics-server:v0.6.1
+dashboard_install: yes
+dashboard_image: kubernetesui/dashboard:v2.6.1
+dashboard_metrics_scraper_image: kubernetesui/metrics-scraper:v1.0.8
+# ingress 安装
+ingress_install: yes
+# ingress 暴露类型 LoadBalancer NodePort
+# 若类型为LoadBalancer 分配IP时一直pending，那么lb没有分配合适的VIP
+# 可自定义分配IP，请安装metallb定义一组VIP地址
+ingress_type: LoadBalancer
+ingress_image: registry.cn-shanghai.aliyuncs.com/fl233/ingress-nginx:v1.3.1
+kube_webhook_certgen_image: registry.cn-shanghai.aliyuncs.com/fl233/kube-webhook-certgen:v1.3.0
+metallb_install: yes
+metallb_control_image: registry.cn-shanghai.aliyuncs.com/fl233/metallb:v0.13.5
+metallb_speaker_image: registry.cn-shanghai.aliyuncs.com/fl233/speaker:v0.13.5
+# 分配VIP
+# 从 1.19 开始支持多个逗号分隔的范围以及 CIDR 表示法 metallb:10.64.140.43-10.64.140.49,10.64.141.53-10.64.141.59,10.12.13.0/24`)
+metallb_ip_range: 192.168.10.233-192.168.10.240
+promethues_install: yes
+####################################################################
+# role nginx
 ####################################################################
 # nginx 版本
 nginx_version: 1.22.0
-# docker 版本
-# docker版本大于18.06.3时，-ce省略，如20.10.9
-docker_version: 18.06.3-ce
 ####################################################################
 # keepalived 设置VIP地址
 VIP_ADDRESS_1: 192.168.10.233
@@ -35,34 +195,3 @@ HA_VIP: "192.168.10.233"
 # web 后端名称 IP地址 端口号
 WEB1: { HOST: web1, IP: 192.168.10.88, PORT: 80 }
 WEB2: { HOST: web2, IP: 192.168.10.89, PORT: 8080 }
-####################################################################
-# kubernetes
-####################################################################
-# Binaries Directory 
-# kubernetes etcd 
-bin_dir: "/opt/kube/bin"
-# CA and other components cert/key Directory
-ca_dir: "/etc/kubernetes/ssl"
-# Service proxy mode of kube-proxy: 'iptables' or 'ipvs'
-PROXY_MODE: "ipvs"
-####################################################################
-# CA
-# Deploy Directory (kubeasz workspace)
-base_dir: "{{ files }}"
-# Directory for a specific cluster
-# cluster_dir: "{{ base_dir }}/clusters/_cluster_name_"
-cluster_dir: "{{ base_dir }}"
-# 证书时效
-# default: ca will expire in 100 years
-# default: certs issued by the ca will expire in 50 years
-CA_EXPIRY: "876000h"
-CERT_EXPIRY: "438000h"
-CUSTOM_EXPIRY: "438000h"
-####################################################################
-# etcd 
-ETCD_DATA_DIR: "/var/lib/etcd"
-# etcd veriosn
-ETCD_VERIOSN: 3.4.20
-# 设置不同的wal目录，可以避免磁盘io竞争，提高性能
-ETCD_WAL_DIR: ""
-####################################################################

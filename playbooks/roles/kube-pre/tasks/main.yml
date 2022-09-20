@@ -1,14 +1,122 @@
-- include: common.yml
+- name: 关闭防火墙
+  service: name=firewalld state=stopped enabled=no
 
-- name: 清理iptables规则
-  shell: iptables -F
-# 某些系统没有/usr/bin/python，需要配置一个软链接，否则connection: local的任务会失败
-# 如果仍旧出现任务失败，重新执行一遍即可 https://github.com/ansible/ansible/issues/64903
-- name: symlink /usr/bin/python -> /usr/bin/python3
-  raw: |
-    if [ -f /usr/bin/python3 ] && [ ! -f /usr/bin/python ]; then
-      ln --symbolic /usr/bin/python3 /usr/bin/python;
-    fi
+- name: 临时关闭 selinux
+  shell: "setenforce 0"
+  failed_when: false
+
+- name: 永久关闭 selinux
+  lineinfile:
+    dest: /etc/selinux/config
+    regexp: "^SELINUX="
+    line: "SELINUX=disabled"
+
+- name: 禁用系统 swap
+  shell: "swapoff -a && sysctl -w vm.swappiness=0"
+  ignore_errors: true
+
+- name: 删除 fstab swap 相关配置
+  lineinfile:
+    path: /etc/fstab
+    regexp: 'swap'
+    state: absent
+    backup: 'yes'
+
+# - name: 注释 fstab swap 相关配置
+#   replace:
+#     path: /etc/fstab
+#     regexp: "(.*swap.*)"
+#     replace: '#\1'
+
+- name: 加载内核模块
+  modprobe: name={{ item }} state=present
+  with_items:
+    - overlay
+    - br_netfilter
+    - ip_vs
+  ignore_errors: true
+
+- name: 启用systemd自动加载模块服务
+  service: name=systemd-modules-load enabled=yes
+
+- name: 增加内核模块开机加载配置
+  template: src=10-k8s-modules.conf.j2 dest=/etc/modules-load.d/10-k8s-modules.conf
+
+# 设置系统参数for k8s
+# 消除docker info 警告WARNING: bridge-nf-call-ip[6]tables is disabled
+# https://success.docker.com/article/ipvs-connection-timeout-issue 缩短keepalive_time超时时间为600s
+- name: 设置系统参数
+  template: src=95-k8s-sysctl.conf.j2 dest=/etc/sysctl.d/95-k8s-sysctl.conf
+
+- name: 生效系统参数
+  shell: "sysctl -p /etc/sysctl.d/95-k8s-sysctl.conf"
+  ignore_errors: true
+
+# 设置系统 ulimits
+- name: 创建 systemd 配置目录
+  file: name=/etc/systemd/system.conf.d state=directory
+
+- name: 设置系统 ulimits
+  template: src=30-k8s-ulimits.conf.j2 dest=/etc/systemd/system.conf.d/30-k8s-ulimits.conf
+
+- name: 添加hosts主机解析
+  template:
+    src: hosts.j2
+    dest: /etc/hosts
+    mode: 0600
+
+- name: 根据规划设置主机名
+  template:
+    src: hostname.sh.j2
+    dest: /tmp/hostname.sh
+    mode: 0755
+
+- shell: "[ -f /tmp/hostname.sh ]"
+  register: check_hostname
+  changed_when: false
+  ignore_errors: true
+  run_once: true
+
+- name: 修改主机名
+  command: bash /tmp/hostname.sh
+  when: check_hostname.rc == 0
+
+# 优化设置 journal 日志相关，避免日志重复搜集，浪费系统资源
+- name: 禁止rsyslog获取journald日志1
+  lineinfile:
+    dest: /etc/rsyslog.conf
+    state: present
+    regexp: "ModLoad imjournal"
+    line: "#$ModLoad imjournal # provides access to the systemd journal"
+
+- name: 禁止rsyslog获取journald日志2
+  lineinfile:
+    dest: /etc/rsyslog.conf
+    state: present
+    regexp: "IMJournalStateFile"
+    line: "#$IMJournalStateFile imjournal.state"
+
+- name: 重启rsyslog服务
+  service: name=rsyslog state=restarted
+
+- name: 安装基础软件包
+  yum:
+    name:
+      - bash-completion # bash命令补全工具，需要重新登录服务器生效
+      - ntpdate # 时间同步工具
+      - ipvsadm # ipvs 模式需要
+      - rsync # 文件同步工具，分发证书等配置文件需要
+      - nfs-utils # 挂载nfs 共享文件需要 (创建基于 nfs的PV 需要)
+      - psmisc # 安装psmisc 才能使用命令killall，keepalive的监测脚本需要
+      - socat # haproxy 会使用到
+  ignore_errors: true
+
+# 时间同步
+- name: 务配置时间同步计划任
+  cron:
+    name: 时间同步
+    minute: "*/60"
+    job: "/usr/sbin/ntpdate {{ NTP_SERVER }} &> /dev/null "
 
 - name: prepare some dirs
   file: name={{ item }} state=directory
@@ -18,9 +126,39 @@
     - /root/.kube
     - /etc/cni/net.d
 
+# 某些系统没有/usr/bin/python，需要配置一个软链接，否则connection: local的任务会失败
+# 如果仍旧出现任务失败，重新执行一遍即可 https://github.com/ansible/ansible/issues/64903
+# - name: symlink /usr/bin/python -> /usr/bin/python3
+#   raw: |
+#     if [ -f /usr/bin/python3 ] && [ ! -f /usr/bin/python ]; then
+#       ln --symbolic /usr/bin/python3 /usr/bin/python;
+#     fi
+
+- name: 写入环境变量$PATH
+  lineinfile:
+    dest: ~/.bashrc
+    state: present
+    regexp: "kube PATH"
+    line: "export PATH={{ bin_dir }}:$PATH"
+
 - name: 添加 kubectl 自动补全
   lineinfile:
     dest: ~/.bashrc
     state: present
-    regexp: "kubectl completion"
-    line: "source <(kubectl completion bash)"
+    regexp: 'kubectl completion'
+    line: 'source <(kubectl completion bash)'
+
+- block:
+    - name: 分发 kubeconfig配置文件
+      copy: src={{ cluster_dir }}/kubectl.kubeconfig dest=/root/.kube/config mode=0400
+
+    - name: 分发 kube-proxy.kubeconfig配置文件
+      copy: src={{ cluster_dir }}/kube-proxy.kubeconfig dest=/etc/kubernetes/kube-proxy.kubeconfig
+
+    - name: 分发controller/scheduler kubeconfig配置文件
+      copy: src={{ cluster_dir }}/{{ item }} dest=/etc/kubernetes/{{ item }}
+      with_items:
+        - kube-controller-manager.kubeconfig
+        - kube-scheduler.kubeconfig
+      when: "inventory_hostname in groups['kube_master']"
+  when: "inventory_hostname in groups['kube_master'] or inventory_hostname in groups['kube_node']"

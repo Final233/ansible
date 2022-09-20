@@ -1,0 +1,32 @@
+- name: 获取所有已经创建的POD信息
+  command: "{{ cluster_dir }}/bin/kubectl get pod --all-namespaces"
+  register: pod_info
+  connection: local
+  run_once: true
+
+- name: 注册变量 DNS_SVC_IP
+  shell: echo {{ SERVICE_CIDR }}|cut -d/ -f1|awk -F. '{print $1"."$2"."$3"."$4+2}'
+  register: DNS_SVC_IP
+
+- name: 设置变量 CLUSTER_DNS_SVC_IP
+  set_fact: CLUSTER_DNS_SVC_IP={{ DNS_SVC_IP.stdout }}
+
+- debug: var="CLUSTER_DNS_SVC_IP"
+
+- import_tasks: coredns.yml
+  when: ('"coredns" not in pod_info.stdout and dns_install == "yes"')
+
+- import_tasks: nodelocaldns.yml
+  when: ('"node-local-dns" not in pod_info.stdout and ENABLE_LOCAL_DNS_CACHE|bool')
+
+- import_tasks: metrics-server.yml
+  when: ('"metrics-server" not in pod_info.stdout and metricsserver_install == "yes"')
+
+- import_tasks: dashboard.yml
+  when: ('"kubernetes-dashboard" not in pod_info.stdout and dashboard_install == "yes"')
+
+- import_tasks: ingress.yml
+  when: ('"ingress" not in pod_info.stdout and ingress_install == "yes"')
+
+- import_tasks: metallb.yml
+  when: ('"ingress" not in pod_info.stdout and metallb_install == "yes"')

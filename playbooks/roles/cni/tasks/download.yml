@@ -1,0 +1,41 @@
+- shell: "[ -f {{ cluster_dir }}/bin/flannel ]"
+  register: check_flannel
+  connection: local
+  changed_when: false
+  run_once: true
+  ignore_errors: true
+
+- block:
+    - name: download package1
+      get_url:
+        url: https://alist.final233.ga/d/aliyun/bin/flannel-v{{ flannel_version }}-linux-amd64.tar.gz
+        dest: "{{ files }}/package/flannel-v{{ flannel_version }}-linux-amd64.tar.gz"
+        mode: 0755
+        validate_certs: no
+      when: flannel_version == flannel_version_2
+
+    - name: download package2
+      get_url:
+        url: "https://download.fastgit.org/flannel-io/flannel/releases/download/v{{ flannel_version }}/flannel-v{{ flannel_version }}-linux-amd64.tar.gz"
+        dest: "{{ files }}/package/flannel-v{{ flannel_version }}-linux-amd64.tar.gz"
+        mode: 0755
+        validate_certs: no
+      when: flannel_version != flannel_version_2
+
+    - name: 本地提取二进制
+      unarchive:
+        src: "{{ files }}/package/flannel-v{{ flannel_version }}-linux-amd64.tar.gz"
+        dest: "{{ cluster_dir }}/bin/"
+        remote_src: yes
+        extra_opts:
+          - --strip-components=0
+        exclude:
+          - "*.sh"
+          - "*.md*"
+
+    - shell: "[ -f {{ cluster_dir }}/bin/flanneld ] && (cd {{ cluster_dir }}/bin/ && mv flanneld flannel)"
+      ignore_errors: true
+  connection: local
+  when: check_flannel.rc != 0
+  run_once: true
+     

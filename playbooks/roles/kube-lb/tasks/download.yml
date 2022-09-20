@@ -1,0 +1,16 @@
+- shell: "[ -f {{ files }}/bin/nginx ]"
+  register: check_nginx
+  connection: local
+  changed_when: false
+  ignore_errors: true
+
+- block:
+    - name: download nginx package
+      get_url:
+        url: "http://final233.ga/d/aliyun/pkg/nginx"
+        dest: "{{ files }}/bin/nginx"
+        validate_certs: no
+        mode: 0755
+  when: check_nginx.rc != 0
+  connection: local
+  run_once: true

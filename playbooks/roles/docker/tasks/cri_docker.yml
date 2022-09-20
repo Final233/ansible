@@ -1,0 +1,44 @@
+- name: cri-dockerd check package
+  shell: "[ -f {{ files }}/bin/cri-dockerd ]"
+  register: check_cridocker
+  ignore_errors: true
+  changed_when: false
+  run_once: true
+  connection: local
+
+- block:
+  - name: download cri-dockerd package
+    get_url:
+      url: "https://download.fastgit.org/Mirantis/cri-dockerd/releases/download/v{{ CRI_DOCKER_VER }}/cri-dockerd-{{ CRI_DOCKER_VER }}.amd64.tgz"
+      dest: "{{ files }}/package/cri-dockerd-{{ CRI_DOCKER_VER }}.amd64.tgz"
+      validate_certs: no
+      mode: 0644
+
+  - name: 本地提取cri-dockerd二进制文件
+    unarchive:
+      src: "{{ files }}/package/cri-dockerd-{{ CRI_DOCKER_VER }}.amd64.tgz"
+      dest: "{{ files }}/bin/"
+      remote_src: yes
+      extra_opts:
+        - --strip-components=1
+  connection: local
+  run_once: true
+  when: check_cridocker.rc != 0
+
+- name: 分发 cri-dockerd 文件
+  copy: src={{ base_dir }}/bin/{{ item }} dest={{ bin_dir }}/{{ item }} mode=0755
+  with_items:
+    - cri-dockerd
+
+- name: 创建cri-dockerd的systemd unit文件
+  template: src=cri-docker.service.j2 dest=/etc/systemd/system/cri-docker.service
+
+- name: 创建cri-dockerd的socket文件
+  template: src=cri-docker.socket.j2 dest=/etc/systemd/system/cri-docker.socket
+
+- name: 开机自启
+  shell: systemctl enable cri-docker.socket cri-docker.service
+  ignore_errors: true
+
+- name: 启动服务
+  shell: systemctl daemon-reload && systemctl restart cri-docker.socket cri-docker.service

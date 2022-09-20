@@ -1,1 +1,8 @@
-app_dir: /apps/docker
+app_dir: "{{ bin_dir }}"
+# cgroup driver
+# CGROUP_DRIVER: "{%- if DOCKER_VER|float >= 20.10 -%} \
+#                      systemd \
+#                 {%- else -%} \
+#                      cgroupfs \
+#                 {%- endif -%}"
+CGROUP_DRIVER: systemd

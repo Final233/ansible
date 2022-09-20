@@ -1,43 +1,15 @@
+- include: etcd-ca.yml
+- include: download.yml
+
 - name: prepare some dirs
   file: name={{ ETCD_DATA_DIR }} state=directory mode=0700
 
-- shell: "[ -f {{ cluster_dir }}/etcd-v{{ ETCD_VERIOSN }}-linux-amd64.tar.gz ]"
-  register: check_etcd_pkg
-  ignore_errors: yes
-  connection: local
-
-- name: 本地提取etcd二进制文件
-  unarchive:
-    src: "{{ cluster_dir }}/etcd-v{{ ETCD_VERIOSN }}-linux-amd64.tar.gz"
-    dest: "{{ cluster_dir }}/bin/"
-    remote_src: yes
-    extra_opts:
-      - --strip-components=1
-    exclude:
-      - "*.md"
-      - "Document*"
-  connection: local
-  tags: upgrade_etcd
-  when: check_etcd_pkg.rc != 0
-
 - name: 分发etcd二进制文件
-  copy: src={{ base_dir }}/bin/{{ item }} dest={{ bin_dir }}/{{ item }} mode=0755
+  copy: src={{ cluster_dir }}/bin/{{ item }} dest={{ bin_dir }}/{{ item }} mode=0755
   with_items:
     - etcd
     - etcdctl
   tags: upgrade_etcd
-
-- name: 创建etcd证书请求
-  template: src=etcd-csr.json.j2 dest={{ cluster_dir }}/ssl/etcd-csr.json
-  connection: local
-
-- name: 创建 etcd证书和私钥
-  shell: "cd {{ cluster_dir }}/ssl && {{ base_dir }}/bin/cfssl gencert \
-    -ca=ca.pem \
-    -ca-key=ca-key.pem \
-    -config=ca-config.json \
-    -profile=kubernetes etcd-csr.json | {{ base_dir }}/bin/cfssljson -bare etcd"
-  connection: local
 
 - name: 分发etcd证书相关
   copy: src={{ cluster_dir }}/ssl/{{ item }} dest={{ ca_dir }}/{{ item }}
@@ -50,12 +22,13 @@
   template: src=etcd.service.j2 dest=/etc/systemd/system/etcd.service
   tags: upgrade_etcd, restart_etcd
 
+- name: 开机启用etcd服务
+  shell: systemctl enable etcd
+  ignore_errors: true
+  
 - name: 开启etcd服务
-  service:
-    name: etcd
-    state: started
-    enabled: yes
-  # ignore_errors: true
+  shell: systemctl daemon-reload && systemctl restart etcd
+  ignore_errors: true
   tags: upgrade_etcd, restart_etcd
 
 - name: 以轮询的方式等待服务同步完成

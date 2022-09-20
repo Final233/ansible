@@ -1,0 +1,10 @@
+1
+{% if enable_aggregation_layer |bool %}
+--proxy-client-cert-file={{ ca_dir }}/aggregator-proxy.pem \
+--proxy-client-key-file={{ ca_dir }}/aggregator-proxy-key.pem \
+--enable-aggregator-routing=true \
+{% else %}
+  ----
+{% endif %}
+2
+xxxxxxxxxxxxx

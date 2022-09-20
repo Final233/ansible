@@ -1,0 +1,19 @@
+# cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=kubernetes server-csr.json | cfssljson -bare server
+- name: 创建etcd证书请求
+  template: src=etcd-csr.json.j2 dest={{ cluster_dir }}/ssl/etcd-csr.json
+  connection: local
+
+- name: 创建 etcd证书和私钥
+  shell: "cd {{ cluster_dir }}/ssl && {{ base_dir }}/bin/cfssl gencert \
+    -ca=ca.pem \
+    -ca-key=ca-key.pem \
+    -config=ca-config.json \
+    -profile=kubernetes etcd-csr.json | {{ base_dir }}/bin/cfssljson -bare etcd"
+  connection: local
+
+- name: 分发etcd证书相关
+  copy: src={{ cluster_dir }}/ssl/{{ item }} dest={{ ca_dir }}/{{ item }}
+  with_items:
+    - ca.pem
+    - etcd.pem
+    - etcd-key.pem

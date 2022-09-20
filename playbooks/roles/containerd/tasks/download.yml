@@ -1,0 +1,29 @@
+- shell: "[ -f {{ files }}/bin/containerd ]"
+  register: check_containerd
+  ignore_errors: true
+  connection: local
+
+- block:
+    - name: download package
+      get_url:
+        url: "https://github.com/containerd/containerd/releases/download/v{{ CONTAINERD_VERSION }}/cri-containerd-{{ CONTAINERD_VERSION }}-linux-amd64.tar.gz"
+        dest: "{{ files }}/package"
+        mode: 0644
+        validate_certs: no
+
+    - name: 本地提取二进制文件
+      unarchive:
+        src: "{{ files }}/package/cri-containerd-{{ CONTAINERD_VERSION }}-linux-amd64.tar.gz"
+        dest: "{{ files }}/bin/"
+        remote_src: yes
+        extra_opts:
+          - --strip-components=3
+        exclude:
+          - "*.yaml"
+          - "*.template"
+          - "*.sh"
+          - "version"
+          - "containerd.service"
+  connection: local
+  run_once: true
+  when: check_containerd.rc != 0

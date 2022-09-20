@@ -1,0 +1,12 @@
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+{% for h in groups['etcd'] %}
+{{ h~' etcd'~loop.index~'.'~CUSTOM_DOMAIN~' etcd'~loop.index }}
+{% endfor %}
+{% for h in groups['kube_master'] %}
+{{ h~' master'~loop.index~'.'~CUSTOM_DOMAIN~' master'~loop.index }}
+{% endfor %}
+{% for h in groups['kube_node'] %}
+{{ h~' node'~loop.index~'.'~CUSTOM_DOMAIN~' node'~loop.index }}
+{% endfor %}
+{{ KUBE_API_VIP }} {{ KUBEAPI_DOMAIN }}

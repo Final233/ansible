@@ -1,0 +1,33 @@
+- shell: "[ -f {{ files }}/bin/cfssl-certinfo ]"
+  register: check_cfssl
+  changed_when: false
+  ignore_errors: true
+
+- block:
+    - name: 下载cfssl证书生成工具
+      get_url:
+        # url: https://pkg.cfssl.org/R1.2/cfssl_linux-amd64
+        url: https://alist.final233.ga/d/aliyun/bin/cfssl
+        dest: "{{ files }}/bin/cfssl"
+        mode: 0755
+        force: yes
+        validate_certs: no
+
+    - name: 下载cfssljson工具
+      get_url:
+        # url: https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64
+        url: https://alist.final233.ga/d/aliyun/bin/cfssljson
+        dest: "{{ files }}/bin/cfssljson"
+        mode: 0755
+        force: yes
+        validate_certs: no
+
+    - name: 下载cfssl-certinfo工具
+      get_url:
+        # url: https://pkg.cfssl.org/R1.2/cfssl-certinfo_linux-amd64
+        url: https://alist.final233.ga/d/aliyun/bin/cfssl-certinfo
+        dest: "{{ files }}/bin/cfssl-certinfo"
+        mode: 0755
+        force: yes
+        validate_certs: no
+  when: check_cfssl.rc != 0

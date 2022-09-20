@@ -1,0 +1,23 @@
+- name: 准备 metallb的部署文件
+  template: src=metallb/{{ item }}.j2 dest={{ cluster_dir }}/yml/{{ item }}
+  with_items:
+    - "metallb-native.yaml"
+  run_once: true
+  connection: local
+
+- name: 创建 metallb部署
+  shell: "{{ cluster_dir }}/bin/kubectl apply -f {{ cluster_dir }}/yml/metallb-native.yaml"
+  run_once: true
+  connection: local
+
+- name: 准备 matallb VIP文件
+  template: src=metallb/{{ item }}.j2 dest={{ cluster_dir }}/yml/{{ item }}
+  with_items:
+    - "metallb.yaml"
+  run_once: true
+  connection: local
+
+- name: 创建 metallb VIP
+  shell: "{{ cluster_dir }}/bin/kubectl apply -f {{ cluster_dir }}/yml/metallb.yaml"
+  run_once: true
+  connection: local

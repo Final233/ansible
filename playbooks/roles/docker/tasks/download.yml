@@ -1,22 +1,35 @@
-- name: 检测docker是否安装
-  shell: systemctl is-active docker
+- name: docker check package
+  shell: "[ -f {{ files }}/bin/docker ]"
   register: check_docker
-  ignore_errors: True
+  ignore_errors: true
+  changed_when: false
+  run_once: true
+  connection: local
 
 - block:
-    - shell: "[ -f {{ files }}/docker-{{ docker_version }}.tar.gz ] || echo 'failed'"
-      register: file_check
-      connection: local
-      changed_when: false
-
-    - name: download docker package
+    - name: download docker package1
       get_url:
-        url: "https://download.docker.com/linux/static/stable/{{ arch }}/docker-{{ docker_version }}.tgz"
-        dest: "{{ files }}"
+        url: "https://final233.ga/d/aliyun/bin/docker-{{ docker_version }}.tgz"
+        dest: "{{ files }}/package/docker-{{ docker_version }}.tgz"
         validate_certs: no
         mode: 0644
-      when: "'failed' in file_check.stdout"
-      connection: local
+      when: docker_version == "18.06.3-ce"
+    
+    - name: download docker package2
+      get_url:
+        url: "https://download.docker.com/linux/static/stable/{{ ARCH }}/docker-{{ docker_version }}.tgz"
+        dest: "{{ files }}/package/docker-{{ docker_version }}.tgz"
+        validate_certs: no
+        mode: 0644
+      when: docker_version != "18.06.3-ce"
 
-  when: check_docker.rc != 0
+    - name: 本地提取docker二进制文件
+      unarchive:
+        src: "{{ files }}/package/docker-{{ docker_version }}.tgz"
+        dest: "{{ files }}/bin/"
+        remote_src: yes
+        extra_opts:
+          - --strip-components=1
   connection: local
+  run_once: true
+  when: check_docker.rc != 0

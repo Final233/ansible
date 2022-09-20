@@ -1,2 +1,5 @@
 - include: download.yml
 - include: install.yml
+
+- include: cri_docker.yml
+  when: CRI_DOCKER == "true"

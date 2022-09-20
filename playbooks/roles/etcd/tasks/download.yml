@@ -1,0 +1,39 @@
+- shell: "[ -f {{ cluster_dir }}/bin/etcd ]"
+  register: check_etcd
+  ignore_errors: true
+  connection: local
+  changed_when: false
+
+- block:
+    # wget https://github.com/etcd-io/etcd/releases/download/v3.4.9/etcd-v3.4.9-linux-amd64.tar.gz
+    - name: download etcd package1
+      get_url:
+        # url: "https://github.com/etcd-io/etcd/releases/download/{{ ETCD_VERIOSN }}/etcd-{{ ETCD_VERIOSN }}-linux-amd64.tar.gz"
+        url: "https://final233.ga/d/aliyun/pkg/etcd-v{{ ETCD_VERIOSN }}-linux-amd64.tar.gz"
+        dest: "{{ files }}/package/etcd-v{{ ETCD_VERIOSN }}-linux-amd64.tar.gz"
+        validate_certs: no
+        mode: 0644
+      when: ETCD_VERIOSN == "3.4.20"
+
+    - name: download etcd package2
+      get_url:
+        url: "https://github.com/etcd-io/etcd/releases/download/{{ ETCD_VERIOSN }}/etcd-v{{ ETCD_VERIOSN }}-linux-amd64.tar.gz"
+        dest: "{{ files }}/package/etcd-v{{ ETCD_VERIOSN }}-linux-amd64.tar.gz"
+        validate_certs: no
+        mode: 0644
+      when: ETCD_VERIOSN != "3.4.20"
+
+    - name: 本地提取etcd二进制文件
+      unarchive:
+        src: "{{ files }}/package/etcd-v{{ ETCD_VERIOSN }}-linux-amd64.tar.gz"
+        dest: "{{ cluster_dir }}/bin/"
+        remote_src: yes
+        extra_opts:
+          - --strip-components=1
+        exclude:
+          - "*.md"
+          - "Document*"
+      tags: upgrade_etcd
+  connection: local
+  run_once: true
+  when: check_etcd.rc != 0

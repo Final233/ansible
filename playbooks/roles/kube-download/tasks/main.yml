@@ -1,0 +1,30 @@
+- shell: "[ -f {{ cluster_dir }}/bin/kube-apiserver ]"
+  register: check_kubernetes_package
+  connection: local
+  changed_when: false
+  ignore_errors: true
+
+- block:
+    - name: download kubernetes package
+      get_url:
+        url: "https://dl.k8s.io/v{{ K8S_VER }}/kubernetes-server-linux-{{ K8S_ARCH }}.tar.gz"
+        dest: "{{ files }}/package/kubernetes-server-linux-{{ K8S_ARCH }}.tar.gz"
+        validate_certs: no
+        mode: 0644
+
+    - name: 本地提取kubernetes二进制文件
+      unarchive:
+        src: "{{ files }}/package/kubernetes-server-linux-{{ K8S_ARCH }}.tar.gz"
+        dest: "{{ cluster_dir }}/bin/"
+        remote_src: yes
+        extra_opts:
+          - --strip-components=3
+        exclude:
+          - "*.docker_tag"
+          - "*.tar"
+          - "*.org"
+          - "*.com"
+          - "*.io"
+          - "*.in"
+  when: check_kubernetes_package.rc != 0
+  connection: local

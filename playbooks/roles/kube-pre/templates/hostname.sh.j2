@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+local_ip=$(hostname -I | awk '{print $1}')
+hosts='/etc/hosts'
+{# {% for h in groups['all'] %}  #}
+{% if ansible_default_ipv4.address in groups['kube_master'] %}
+hostnamectl set-hostname $(awk -v ip=$local_ip '{if($1==ip && $2 !~ "kubeapi" && $2 ~ "master")print $2}' $hosts)
+{% elif ansible_default_ipv4.address in groups['kube_node'] %}
+hostnamectl set-hostname $(awk -v ip=$local_ip '{if($1==ip && $2 !~ "kubeapi" && $2 ~ "node")print $2}' $hosts)
+{% elif ansible_default_ipv4.address in groups['etcd'] %}
+hostnamectl set-hostname $(awk -v ip=$local_ip '{if($1==ip && $2 !~ "kubeapi" && $2 ~ "etcd")print $2}' $hosts)
+{% else %}
+exit
+{% endif %}
+{# {% endfor %} #}
+{# hostnamectl set-hostname  #}

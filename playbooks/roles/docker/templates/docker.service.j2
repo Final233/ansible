@@ -3,8 +3,8 @@ Description=Docker Application Container Engine
 Documentation=http://docs.docker.io
 
 [Service]
-Environment="PATH={{ app_dir }}/bin:/bin:/sbin:/usr/bin:/usr/sbin"
-ExecStart={{ app_dir }}/bin/dockerd 
+Environment="PATH={{ bin_dir }}:/bin:/sbin:/usr/bin:/usr/sbin"
+ExecStart={{ bin_dir }}/dockerd 
 ExecStartPost=/sbin/iptables -I FORWARD -s 0.0.0.0/0 -j ACCEPT
 ExecReload=/bin/kill -s HUP $MAINPID
 Restart=always

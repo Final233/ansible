@@ -1,0 +1,2 @@
+# TMP_NODES: "{% for h in groups['etcd'] %} {{ 'etcd'~loop.index }} {% endfor %}"
+ETCD_HOSTS: "{% for h in groups['etcd'] %} {{ h~' etcd'~loop.index~' etcd'~loop.index~'.final.com' \n }} {% endfor %}"
