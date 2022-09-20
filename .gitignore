@@ -1,3 +1,4 @@
 logs/*
+files/bin/*
 files/package/*
 files/clusters/k8s-01/bin/*
