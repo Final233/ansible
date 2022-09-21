@@ -473,10 +473,10 @@ _cmd() {
         _delnode $@
         ;;
     addetcd)
-        _addetcd $@
+        _add_etcd $@
         ;;
     deletcd)
-        _deletcd $@
+        _del_etcd $@
         ;;
     add_kcfg)
         _add_kcfg $@
